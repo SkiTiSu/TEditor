@@ -1,0 +1,141 @@
+﻿<UserControl x:Class="TEditor.TextLayerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TEditor"
+             xmlns:controls="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style TargetType="DockPanel">
+            <Setter Property="Margin" Value="0,6,0,6" />
+        </Style>
+        <Style x:Key="KaoRight" TargetType="TextBlock">
+            <!--<Setter Property="Width" Value="26" />-->
+            <Setter Property="TextAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0,6,4,0" />
+        </Style>
+        <local:EnumConverter x:Key="EnumConverterKey" />
+    </UserControl.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="基本">
+                <StackPanel Orientation="Vertical" hc:InfoElement.TitlePlacement="Left">
+                    <hc:TextBox hc:InfoElement.Title="文字" x:Name="textBoxInput" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding VariableEnableInverse}" 
+                                VerticalAlignment="Stretch" Height="56" Margin="0,0,0,0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" VerticalContentAlignment="Top" />
+                    <CheckBox FlowDirection="RightToLeft" IsChecked="{Binding VariableEnable}" HorizontalAlignment="Left">
+                        <TextBlock FlowDirection="LeftToRight" Text="变量" />
+                    </CheckBox>
+                    <DockPanel Visibility="{Binding VariableEnable, Converter={StaticResource BoolToVis}}">
+                        <hc:TextBox hc:InfoElement.Title="文字模板"  Text="{Binding VariableTemplate}" 
+                                    Height="56" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" TextWrapping="Wrap" />
+                    </DockPanel>
+                    <hc:ComboBox hc:InfoElement.Title="字体" x:Name="comboBoxFont" SelectionChanged="comboBoxFont_SelectionChanged" />
+                    <hc:ComboBox hc:InfoElement.Title="字重" x:Name="comboBoxFontWeight" SelectedItem="{Binding FontWeight}" />
+                    <hc:ComboBox hc:InfoElement.Title="字号" x:Name="comboBoxFontSize" Text="{Binding FontSize}" IsEditable="True" />
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource KaoRight}">效果</TextBlock>
+                        <ToggleButton x:Name="toggleButtonBold" HorizontalAlignment="Left"  VerticalAlignment="Top" FontWeight="Bold" Click="toggleButtonBold_Click">
+                            <iconPacks:PackIconBootstrapIcons Kind="TypeBold" Width="12" Height="12"/>
+                        </ToggleButton>
+                        <ToggleButton x:Name="toggleButtonItalic"  HorizontalAlignment="Left" VerticalAlignment="Top" FontStyle="Italic" Click="toggleButtonItalic_Click">
+                            <iconPacks:PackIconBootstrapIcons Kind="TypeItalic" Width="12" Height="12"/>
+                        </ToggleButton>
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource KaoRight}">对齐</TextBlock>
+                        <hc:ButtonGroup  Width="120" HorizontalAlignment="Left">
+                            <!-- RadioButton Style="{StaticResource {x:Type ToggleButton}}" -->
+                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Left}"  Padding="0">
+                                <iconPacks:PackIconBootstrapIcons Kind="TextLeft" Width="12" Height="12"/>
+                            </ToggleButton>
+                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Center}" Padding="0">
+                                <iconPacks:PackIconBootstrapIcons Kind="TextCenter" Width="12" Height="12"/>
+                            </ToggleButton>
+                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Right}" Padding="0">
+                                <iconPacks:PackIconBootstrapIcons Kind="TextRight" Width="12" Height="12"/>
+                            </ToggleButton>
+                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Justify}" Padding="0">
+                                <iconPacks:PackIconBootstrapIcons Kind="Justify" Width="12" Height="12"/>
+                            </ToggleButton>
+                        </hc:ButtonGroup>
+                    </DockPanel>
+                    <hc:TextBox hc:InfoElement.Title="行距" Text="{Binding LineHeight}" hc:InfoElement.Placeholder="0为默认" />
+                    <hc:NumericUpDown hc:InfoElement.Title="间距（伪）" Value="{Binding TextSpaceNumber}" Minimum="0" hc:InfoElement.Placeholder="0为默认" Style="{StaticResource NumericUpDownExtend}" />
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource KaoRight}">颜色</TextBlock>
+                        <controls:ColorPicker x:Name="colorPickerText" Height="22" SelectedColor="{Binding Color}"/>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="描边">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource KaoRight}">描边</TextBlock>
+                        <CheckBox IsChecked="{Binding StrokeEnable}"/>
+                    </DockPanel>
+                    <DockPanel Visibility="{Binding StrokeEnable, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Style="{StaticResource KaoRight}">设置</TextBlock>
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">颜色</TextBlock>
+                                <controls:ColorPicker Height="22" SelectedColor="{Binding StrokeColor}"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">宽度</TextBlock>
+                                <TextBox Text="{Binding StrokeThickness}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">类型</TextBlock>
+                                <ComboBox x:Name="comboBoxStrokePosition" SelectedItem="{Binding StrokePosition}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="阴影">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource KaoRight}">阴影</TextBlock>
+                        <CheckBox IsChecked="{Binding ShadowEnable}"/>
+                    </DockPanel>
+                    <DockPanel Visibility="{Binding ShadowEnable, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Style="{StaticResource KaoRight}">设置</TextBlock>
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">深度</TextBlock>
+                                <TextBox Text="{Binding ShadowDepth}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">方向</TextBlock>
+                                <TextBox Text="{Binding ShadowDirection}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">颜色</TextBlock>
+                                <controls:ColorPicker Height="22" SelectedColor="{Binding ShadowColor}"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">透明</TextBlock>
+                                <TextBox Text="{Binding ShadowOpacity}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Style="{StaticResource KaoRight}">模糊半径</TextBlock>
+                                <TextBox Text="{Binding ShadowBlurRadius}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        
+
+
+    </Grid>
+</UserControl>

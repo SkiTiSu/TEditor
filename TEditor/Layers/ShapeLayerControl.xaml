@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="TEditor.Layers.ShapeLayerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TEditor.Layers"
+             xmlns:controls="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             d:DataContext="{d:DesignInstance Type=local:ShapeLayerBase}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="204.15">
+    <Grid>
+        <StackPanel Orientation="Vertical" hc:TitleElement.TitlePlacement="Left">
+            <DockPanel>
+                <TextBlock>填充颜色</TextBlock>
+                <controls:ColorPicker Height="22" SelectedColor="{Binding FillColor}"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock>描边颜色</TextBlock>
+                <controls:ColorPicker Height="22" SelectedColor="{Binding BorderColor}"/>
+            </DockPanel>
+            <hc:NumericUpDown hc:InfoElement.Title="描边宽度" Value="{Binding BorderWidth}" Minimum="0" Increment="0.5" hc:InfoElement.Placeholder="0为默认" Style="{StaticResource NumericUpDownExtend}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

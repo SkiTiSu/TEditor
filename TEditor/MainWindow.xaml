@@ -1,0 +1,113 @@
+﻿<hc:GlowWindow x:Class="TEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views"
+        mc:Ignorable="d"
+        Title="TEditor by 四季天书 技术预览版 ?.?.?" Height="450" Width="800" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
+        ActiveGlowColor="{DynamicResource PrimaryColor}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="36"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="buttonOpen" Content="打开" Click="buttonOpen_Click" />
+                <Button x:Name="buttonSave" Content="保存" Click="buttonSave_Click" />
+                <Button x:Name="buttonBatchExport" Content="批量导出" Click="buttonBatchExport_Click"/>
+                <Button x:Name="buttonExport" Content="导出" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonExport_Click"/>
+                <Button x:Name="buttonImportTable" Content="导入数据" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonImportTable_Click" />
+            </StackPanel>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="条件格式" VerticalAlignment="Center" />
+                <ListBox x:Name="listBoxCondition" MouseDoubleClick="listBoxCondition_MouseDoubleClick" SelectionChanged="listBoxCondition_SelectionChanged">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" IsItemsHost="True" ItemHeight="28"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+                <Button x:Name="buttonConditionRemove" Content="-" Click="buttonConditionRemove_Click"/>
+                <Button x:Name="buttonConditionAdd" Content="+" Click="buttonConditionAdd_Click"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" Background="#535353">
+            <StackPanel Orientation="Vertical">
+                <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="4" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Canvas x:Name="canvasLayout" Grid.Row="0" MouseDown="canvasLayout_MouseDown" MouseMove="canvasLayout_MouseMove" MouseUp="canvasLayout_MouseUp" Background="#FF282828" ClipToBounds="True" MouseWheel="canvasLayout_MouseWheel" Focusable="True" KeyDown="canvasLayout_KeyDown" >
+                    <Canvas x:Name="canvasContent" Width="192" Height="108" Canvas.Left="31" Canvas.Top="27" ClipToBounds="True">
+                        <Canvas x:Name="canvasContentBackground" Width="192" Height="108" Panel.ZIndex="-99" MouseLeftButtonUp="canvasContentBackground_MouseLeftButtonUp" >
+                            <Canvas.Background>
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z" Brush="White"/>
+                                            <!--<GeometryDrawing Geometry="M0,1 L2,1 2,2, 1,2 1,0 0,0Z" Brush="Black"/>-->
+                                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                    </Canvas>
+                </Canvas>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBox x:Name="textboxCanvasScale" Text="100%" Width="50" LostFocus="textboxCanvasScale_LostFocus" />
+                </StackPanel>
+            </Grid>
+            <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Black"/>
+            <DataGrid x:Name="dataGridMain" Grid.Row="2" AutoGenerateColumns="True" SelectionChanged="dataGridMain_SelectionChanged"/>
+        </Grid>
+        <GridSplitter Grid.Row="1" Grid.Column="2" Width="4" HorizontalAlignment="Stretch" Background="Black"/>
+
+        <Grid Grid.Row="1" Grid.Column="3" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0">
+                <StackPanel x:Name="placeLayerControl" Orientation="Vertical" Margin="0"/>
+            </ScrollViewer>
+            <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Black"/>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
+                <local:UserControlLayers x:Name="listBoxLayers"  />
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</hc:GlowWindow>
