@@ -33,11 +33,14 @@ namespace TEditor.Layers
         {
             Init(canvasLayout, canvasContent);
 
-            this.Id = model.Id;
-            this.Visible = model.Visible;
-            this.ZIndex = model.ZIndex;
+            Id = model.Id;
+            Visible = model.Visible;
+            ZIndex = model.ZIndex;
+            ClippingMaskEnable = model.ClippingMaskEnable;
+            ClippingMaskBottom = model.ClippingMaskBottom;
+
             Inner = LayerInner.FromLayerModel(model, canvasLayout, this);
-            this.Children.Add(Inner);
+            Children.Add(Inner);
         }
 
         private void Init(Canvas canvasLayout, Canvas canvasContent)
@@ -87,7 +90,6 @@ namespace TEditor.Layers
         
         
         public bool ClippingMaskEnable { get; set; }
-        // TODO: 这两个参数进Model
         /// <summary>
         /// 是否是剪贴蒙版提供蒙版的一层
         /// </summary>
@@ -103,6 +105,9 @@ namespace TEditor.Layers
                 Left = Inner.ContentLeft,
                 Top = Inner.ContentTop,
                 Visible = Visible,
+                LayerNameCustom = Inner.LayerNameCustom,
+                ClippingMaskEnable = ClippingMaskEnable,
+                ClippingMaskBottom = ClippingMaskBottom,
                 Data = Inner.Model,
             };
         }

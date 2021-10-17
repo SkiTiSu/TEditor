@@ -14,6 +14,9 @@ namespace TEditor.Models
         public double Left { get; set; }
         public double Top { get; set; }
         public bool Visible { get; set; }
+        public string LayerNameCustom { get; set; }
+        public bool ClippingMaskEnable { get; set; }
+        public bool ClippingMaskBottom { get; set; }
         public object Data { get; set; }
     }
 }

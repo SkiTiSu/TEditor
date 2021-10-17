@@ -14,9 +14,9 @@ namespace TEditor.Models
 
         public DocModel()
         {
-            FormatConditions.Add(new FormatConditionModel()
+            FormatConditionGroups.Add(new FormatConditionGroupModel()
             {
-                Name = FormatConditionModel.DEFAULT_NAME,
+                Name = "默认条件组",
             });
         }
 
@@ -26,6 +26,6 @@ namespace TEditor.Models
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset UpdatedAt { get; set; }
 
-        public ObservableCollection<FormatConditionModel> FormatConditions { get; set; } = new ObservableCollection<FormatConditionModel>();
+        public ObservableCollection<FormatConditionGroupModel> FormatConditionGroups { get; set; } = new ObservableCollection<FormatConditionGroupModel>();
     }
 }

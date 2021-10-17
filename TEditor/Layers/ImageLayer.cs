@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,7 +30,7 @@ namespace TEditor.Layers
                     string imageBase64 = model.Image.Substring(model.Image.IndexOf(",") + 1);
                     fileByte = Convert.FromBase64String(imageBase64);
                 }
-                ReInit();
+                Init();
             }
         }
 
@@ -79,8 +78,8 @@ namespace TEditor.Layers
             get => model.VariableImageUrl;
             set => model.VariableImageUrl = value;
         }
-        public bool EmbedImage 
-        { 
+        public bool EmbedImage
+        {
             get => model.EmbedImage;
             set => model.EmbedImage = value;
         }
@@ -129,16 +128,34 @@ namespace TEditor.Layers
             }
         }
 
+        private void Init()
+        {
+            // TODO 是否换成有fileByte
+            if (EmbedImage)
+            {
+                inMemoryCopy = new MemoryStream(fileByte);
+                image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = inMemoryCopy;
+                image.EndInit();
+            }
+            else
+            {
+                ReInit();
+            }
+        }
+
         private void ReInit()
         {
-            if (string.IsNullOrEmpty(ImageUrl))
+
+            if (string.IsNullOrEmpty(ImageUrl) || !File.Exists(ImageUrl))
             {
                 image = new BitmapImage(new Uri("pack://application:,,,/Resources/media_offline.png"));
             }
             else
             {
                 fileByte = File.ReadAllBytes(ImageUrl);
-                model.Image = $"data:{MimeMapping.GetMimeMapping(ImageUrl)};base64,{Convert.ToBase64String(fileByte)}";
+                model.Image = $"data:{MimeMapping.MimeUtility.GetMimeMapping(ImageUrl)};base64,{Convert.ToBase64String(fileByte)}";
                 inMemoryCopy = new MemoryStream(fileByte);
                 image = new BitmapImage();
                 image.BeginInit();

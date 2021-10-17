@@ -37,7 +37,7 @@
                         <hc:TextBox hc:InfoElement.Title="文字模板"  Text="{Binding VariableTemplate}" 
                                     Height="56" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" TextWrapping="Wrap" />
                     </DockPanel>
-                    <hc:ComboBox hc:InfoElement.Title="字体" x:Name="comboBoxFont" SelectionChanged="comboBoxFont_SelectionChanged" />
+                    <hc:ComboBox hc:InfoElement.Title="字体" x:Name="comboBoxFont" SelectionChanged="comboBoxFont_SelectionChanged" AutoComplete="True" IsEditable="True" />
                     <hc:ComboBox hc:InfoElement.Title="字重" x:Name="comboBoxFontWeight" SelectedItem="{Binding FontWeight}" />
                     <hc:ComboBox hc:InfoElement.Title="字号" x:Name="comboBoxFontSize" Text="{Binding FontSize}" IsEditable="True" />
                     <DockPanel>

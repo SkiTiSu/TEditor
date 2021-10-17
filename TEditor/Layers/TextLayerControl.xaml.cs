@@ -43,6 +43,10 @@ namespace TEditor
         private void comboBoxFont_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FontFamily currentFont = comboBoxFont.SelectedItem as FontFamily;
+            if (currentFont == null)
+            {
+                return;
+            }
             textLayer.FontFamily = currentFont;
             List<FontWeight> list = new List<FontWeight>();
             foreach (var typeface in currentFont.FamilyTypefaces)

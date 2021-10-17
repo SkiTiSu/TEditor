@@ -1,37 +1,26 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Web.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Serialization;
 using TEditor.Converters;
 using TEditor.Layers;
+using TEditor.Messages;
 using TEditor.Models;
+using TEditor.ViewModels;
 using TEditor.Views;
-using ToolGood.Algorithm;
 
 namespace TEditor
 {
@@ -62,12 +51,9 @@ namespace TEditor
             set
             {
                 currentFileName = value;
-                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 0.0.4";
+                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 0.1.0";
             }
         }
-
-        private FormatConditionModel CurrentFormatConditoinModel 
-            => listBoxCondition.SelectedItem as FormatConditionModel;
 
         public MainWindow()
         {
@@ -90,19 +76,41 @@ namespace TEditor
             //TODO: 替身图层没有一起调整顺序
             SwitchToDocControl();
             Model.PropertyChanged += Model_PropertyChanged;
-            listBoxCondition.ItemsSource = Model.FormatConditions;
-            listBoxCondition.SelectedIndex = 0;
+
+            // 条件格式
+            FormatConditionGroupsViewModel formats = new(Model.FormatConditionGroups);
+            controlFormatConditionGroups.DataContext = formats;
+
+            WeakReferenceMessenger.Default.Register<ChangeLayerVisibleMessage>(this, (r, m) =>
+            {
+                LayerIdVisibleChangedByFormatCondition = m.Value.LayerId;
+                // TODO 这里会不会有效率问题
+                _layerManager.Layers.First(x => x.Id == m.Value.LayerId).Visible = m.Value.Visible;
+            });
+
         }
+
+        string LayerIdVisibleChangedByFormatCondition = string.Empty;
 
         private void _layerManager_LayerVisableChanged(object sender, Layer layer)
         {
-            CurrentFormatConditoinModel.LayersVisable[layer.Id] = layer.Visible;
+            if (layer.Id == LayerIdVisibleChangedByFormatCondition)
+            {
+                LayerIdVisibleChangedByFormatCondition = "";
+                return;
+            }
+            WeakReferenceMessenger.Default.Send(new LayerVisibleChangedMessage(new LayerVisible()
+            {
+                LayerId = layer.Id,
+                Visible = layer.Visible,
+            }));
             //TODO: 清除已删除图层
         }
 
         private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Model = Model;
+            // TODO 更换为绑定
         }
 
         private void _layerManager_OnSelectionChanged(object sender, LayerInner e)
@@ -319,7 +327,11 @@ namespace TEditor
             var dataobject = Clipboard.GetDataObject();
             string data_csv = (string)dataobject.GetData(DataFormats.CommaSeparatedValue);
             TextReader sr = new StringReader(data_csv);
-            var reader = new CsvReader(sr, CultureInfo.InvariantCulture);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                BadDataFound = null,
+            };
+            var reader = new CsvReader(sr, config);
             IEnumerable<dynamic> records = reader.GetRecords<dynamic>();
             currentDataTable = ToDataTable(records);
             dataGridMain.ItemsSource = currentDataTable.DefaultView;
@@ -390,48 +402,16 @@ namespace TEditor
             return re;
         }
 
-        private void CheckFormatCondition(int index)
-        {
-            AlgorithmEngine engine = new AlgorithmEngine();
-            foreach (DataColumn column in currentDataTable.Columns)
-            {
-                string value = currentDataTable.Rows[index][column.ColumnName].ToString();
-                if (double.TryParse(value, out double dvalue))
-                {
-                    engine.AddParameter(column.ColumnName, dvalue);
-                }
-                else
-                {
-                    engine.AddParameter(column.ColumnName, value);
-                }
-            }
-            FormatConditionModel defaultCondition = null;
-            foreach (var condition in Model.FormatConditions)
-            {
-                if (condition.Name == FormatConditionModel.DEFAULT_NAME)
-                {
-                    defaultCondition = condition;
-                    continue;
-                }
-                bool isMatch = engine.TryEvaluate(condition.Condition, false);
-                if (isMatch)
-                {
-                    listBoxCondition.SelectedItem = condition;
-                    return;
-                }
-            }
-            if (defaultCondition != null)
-            {
-                listBoxCondition.SelectedItem = defaultCondition;
-            }
-        }
-
         private void dataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridMain.SelectedIndex < currentDataTable.Rows.Count && dataGridMain.SelectedIndex >= 0)
             {
                 UpdateVar(dataGridMain.SelectedIndex);
-                CheckFormatCondition(dataGridMain.SelectedIndex);
+                WeakReferenceMessenger.Default.Send(new DataSelectedRowChangedMessage(new DataSelectedRowChangedMessageArgs() 
+                { 
+                    Data = currentDataTable,
+                    SelectedIndex = dataGridMain.SelectedIndex 
+                }));
             }
         }
 
@@ -469,12 +449,20 @@ namespace TEditor
             if (dlg.ShowDialog() == true)
             {
                 string json = File.ReadAllText(dlg.FileName);
-                var file = JsonSerializer.Deserialize<TEditorFile>(json);
+                var options = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = false
+                };
+                options.Converters.Add(new TypeConverterJsonAdapter());
+                var file = JsonSerializer.Deserialize<TEditorFile>(json, options);
                 //TODO: 错误处理
                 CurrentFileName = dlg.SafeFileName;
                 Model = file.DocModel;
                 _layerManager.SetLayerModels(file.Layers);
-                listBoxCondition.ItemsSource = Model.FormatConditions;
+                _layerManager.RefreshClippingMask();
+                FormatConditionGroupsViewModel formats = new(Model.FormatConditionGroups);
+                controlFormatConditionGroups.DataContext = formats;
             }
         }
 
@@ -543,70 +531,6 @@ namespace TEditor
             }
         }
 
-        private void buttonConditionAdd_Click(object sender, RoutedEventArgs e)
-        {
-            var fcModel = new FormatConditionModel();
-            editCondition(fcModel);
-
-            Model.FormatConditions.Add(fcModel);
-        }
-
-        private void listBoxCondition_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (listBoxCondition.SelectedItem != null)
-            {
-                editCondition(listBoxCondition.SelectedItem as FormatConditionModel);
-            }
-            listBoxCondition.Items.Refresh();
-        }
-
-        private void editCondition(FormatConditionModel model)
-        {
-            var windowCondition = new Window()
-            {
-                Width = 400,
-                Height = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this,
-            };
-            var conditionControl = new FormatConditionControl();
-            conditionControl.DataContext = model;
-            conditionControl.buttonOK.Click += (ss, ee) =>
-            {
-                windowCondition.Close();
-            };
-            windowCondition.Content = conditionControl;
-            windowCondition.ShowDialog();
-
-            //TODO: 增加删除
-        }
-
-        private void listBoxCondition_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var fcModel = CurrentFormatConditoinModel;
-            if (fcModel == null) { return; } //ItemSource刚设置后没有选中的
-
-            foreach (var layer in _layerManager.Layers)
-            {
-                if (fcModel.LayersVisable.ContainsKey(layer.Id))
-                {
-                    layer.Visible = fcModel.LayersVisable[layer.Id];
-                }
-                else
-                {
-                    layer.Visible = true;
-                }
-            }
-        }
-
-        private void buttonConditionRemove_Click(object sender, RoutedEventArgs e)
-        {
-            if (listBoxCondition.Items.Count > 1)
-            {
-                Model.FormatConditions.Remove(CurrentFormatConditoinModel);
-            }
-        }
-
         #region 添加图层
         private void buttonAddText_Click(object sender, RoutedEventArgs e)
         {
@@ -631,5 +555,28 @@ namespace TEditor
             _layerManager.AddWithKey(LayerType.Rectangle);
         }
         #endregion
+
+        private void buttonDuplicateLayer_Click(object sender, RoutedEventArgs e)
+        {
+            if (_layerManager.SelectedLayerInner != null)
+            {
+                var layer = _layerManager.SelectedLayerInner.Parent as Layer;
+                var model = layer.ToLayerModel();
+                model.Id = Guid.NewGuid().ToString();
+
+                var options = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = false
+                };
+                options.Converters.Add(new TypeConverterJsonAdapter());
+
+                // TODO 改进以避免序列化反序列化
+                string json = JsonSerializer.Serialize(model, options);
+                LayerModel layerModel = JsonSerializer.Deserialize<LayerModel>(json);
+
+                _layerManager.AddFromModel(layerModel);
+            }
+        }
     }
 }

@@ -1,0 +1,43 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TEditor.Views"
+             xmlns:ViewModels="clr-namespace:TEditor.ViewModels" x:Class="TEditor.Views.FormatConditionGroups"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ViewModels:FormatConditionGroupsViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ListBox ItemsSource="{Binding Vms}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <local:ConditionGroupItem/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <!--<ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>-->
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource ListBoxItemBaseStyle}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <!--<Setter Property="Control.Width" Value="300"/>-->
+                    <!--<Setter Property="Control.Margin" Value="5"/>-->
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <!--<ListBox.Template>
+                <ControlTemplate>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter/>
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>-->
+        </ListBox>
+        <Button Content="+" Command="{Binding AddGroupCommand}" VerticalAlignment="Bottom"/>
+    </Grid>
+</UserControl>

@@ -13,6 +13,7 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Vertical" hc:InfoElement.TitlePlacement="Left">
+            <hc:TextBox hc:InfoElement.Title="图层名称" Text="{Binding LayerNameCustom, UpdateSourceTrigger=PropertyChanged}"/>
             <CheckBox FlowDirection="RightToLeft" IsChecked="{Binding VariableEnable}" HorizontalAlignment="Left">
                 <TextBlock FlowDirection="LeftToRight" Text="变量" />
             </CheckBox>

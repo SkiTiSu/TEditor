@@ -295,6 +295,26 @@ namespace TEditor
             // TODO 查找上面的图层有没有剪贴图层，取消
         }
 
+        public void RefreshClippingMask()
+        {
+            List<Layer> LayersNeedMask = new();
+            foreach (var layer in Layers)
+            {
+                if (layer.ClippingMaskEnable)
+                {
+                    LayersNeedMask.Add(layer);
+                }
+                else if (layer.ClippingMaskBottom)
+                {
+                    foreach (var layerNeedMask in LayersNeedMask)
+                    {
+                        layerNeedMask.OpacityMask = new VisualBrush(layer);
+                    }
+                    LayersNeedMask.Clear();
+                }
+            }
+        }
+
         public void AutoResetZIndex()
         {
             int i = LayersIndexMax;

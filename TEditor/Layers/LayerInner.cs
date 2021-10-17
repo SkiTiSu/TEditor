@@ -25,7 +25,11 @@ namespace TEditor
         public double GridSubdivisions = 0.5;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string LayerName { get; set; } = "图层";
+        public string LayerNameDisplay => string.IsNullOrWhiteSpace(LayerNameCustom) ? LayerName : LayerNameCustom;
+        [AlsoNotifyFor(nameof(LayerNameDisplay))]
+        public virtual string LayerName { get; set; } = "图层";
+        [AlsoNotifyFor(nameof(LayerNameDisplay))]
+        public string LayerNameCustom { get; set; }
         public virtual string Type { get; } = "Default";
         public virtual string Key { get; } = "DefaultLayer";
         public virtual object Model { get; set; }
@@ -115,10 +119,31 @@ namespace TEditor
             set => base.Width = value;
         }
 
+        // Binding无法识别隐藏基类的new属性
+        public double WidthBinding
+        {
+            get => Width;
+            set 
+            {
+                Width = value;
+                ReArrangeInner();
+            }
+        }
+
         public new virtual double Height
         {
             get => base.Height;
             set => base.Height = value;
+        }
+
+        public double HeightBinding
+        {
+            get => Height;
+            set
+            {
+                Height = value;
+                ReArrangeInner();
+            }
         }
 
         public double LayoutWidth
@@ -274,6 +299,7 @@ namespace TEditor
                     break;
             }
             //layer.Model = model.Data;
+            layer.LayerNameCustom = model.LayerNameCustom;
             layer.ContentLeft = model.Left;
             layer.ContentTop = model.Top;
             return layer;

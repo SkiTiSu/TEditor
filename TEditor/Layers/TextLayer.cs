@@ -1,4 +1,5 @@
 ﻿using Microsoft.SqlServer.Server;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ namespace TEditor.Layers
     public class TextLayer : LayerInner, ILayerWithVar
     {
         public override FrameworkElement LayerControl { get; protected set; } = new TextLayerControl();
-        public new string LayerName { get => Text.Substring(0, Math.Min(Text.Length, 8)); }
+        public override string LayerName => Text.Substring(0, Math.Min(Text.Length, 10));
         public override string Type { get; } = "文字";
         public override string Key { get; } = LayerType.Text;
         public override object Model
@@ -36,6 +37,7 @@ namespace TEditor.Layers
 
         FormattedText formattedText;
 
+        [AlsoNotifyFor(nameof(LayerNameDisplay))]
         public string Text
         {
             get => model.Text;
@@ -304,7 +306,16 @@ namespace TEditor.Layers
             {
                 if (StrokePosition == StrokePosition.Outside)
                 {
-                    var boundsGeo = new RectangleGeometry(new Rect(0, 0, Width, Height));
+                    double startX = 0;
+                    if (TextAlignment == TextAlignment.Center)
+                    {
+                        startX = -Width / 2;
+                    }
+                    else if (TextAlignment == TextAlignment.Right)
+                    {
+                        startX = -Width;
+                    }
+                    var boundsGeo = new RectangleGeometry(new Rect(startX, 0, Width, Height));
                     var _clipGeometry = Geometry.Combine(boundsGeo, _textGeometry, GeometryCombineMode.Exclude, null);
                     drawingContext.PushClip(_clipGeometry);
                 }
@@ -332,7 +343,7 @@ namespace TEditor.Layers
                 }
             }
 
-            //阴影如果导出的时候背景是透明则无法显示 bug
+            // TODO 阴影如果导出的时候背景是透明则无法显示 bug
             if (ShadowEnable)
             {
                 DropShadowEffect dropShadowEffect = new DropShadowEffect()
@@ -384,6 +395,10 @@ namespace TEditor.Layers
             if (VariableEnable)
             {
                 string realText = VariableTemplate;
+                if (string.IsNullOrWhiteSpace(realText))
+                {
+                    return;
+                }
                 foreach (var keyValue in keyValues)
                 {
                     realText = realText.Replace("{" + keyValue.Key + "}", keyValue.Value);
