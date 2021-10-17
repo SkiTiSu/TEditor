@@ -428,14 +428,7 @@ namespace TEditor
                     Layers = _layerManager.GetLayerModels()
                 };
 
-                var options = new JsonSerializerOptions
-                {
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = false
-                };
-                options.Converters.Add(new TypeConverterJsonAdapter());
-
-                string json = JsonSerializer.Serialize(file, options);
+                string json = JsonSerializer.Serialize(file, GlobalConfig.Instance.JsonOptions);
                 File.WriteAllText(sfd.FileName, json);
 
                 CurrentFileName = sfd.SafeFileName;
@@ -449,13 +442,7 @@ namespace TEditor
             if (dlg.ShowDialog() == true)
             {
                 string json = File.ReadAllText(dlg.FileName);
-                var options = new JsonSerializerOptions
-                {
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = false
-                };
-                options.Converters.Add(new TypeConverterJsonAdapter());
-                var file = JsonSerializer.Deserialize<TEditorFile>(json, options);
+                var file = JsonSerializer.Deserialize<TEditorFile>(json, GlobalConfig.Instance.JsonOptions);
                 //TODO: 错误处理
                 CurrentFileName = dlg.SafeFileName;
                 Model = file.DocModel;
@@ -563,16 +550,8 @@ namespace TEditor
                 var layer = _layerManager.SelectedLayerInner.Parent as Layer;
                 var model = layer.ToLayerModel();
                 model.Id = Guid.NewGuid().ToString();
-
-                var options = new JsonSerializerOptions
-                {
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = false
-                };
-                options.Converters.Add(new TypeConverterJsonAdapter());
-
                 // TODO 改进以避免序列化反序列化
-                string json = JsonSerializer.Serialize(model, options);
+                string json = JsonSerializer.Serialize(model, GlobalConfig.Instance.JsonOptions);
                 LayerModel layerModel = JsonSerializer.Deserialize<LayerModel>(json);
 
                 _layerManager.AddFromModel(layerModel);

@@ -325,13 +325,7 @@ namespace TEditor
         public static T ToObject<T>(JsonElement element)
         {
             var json = element.GetRawText();
-            var options = new JsonSerializerOptions
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = false
-            };
-            options.Converters.Add(new TypeConverterJsonAdapter());
-            return JsonSerializer.Deserialize<T>(json, options);
+            return JsonSerializer.Deserialize<T>(json, GlobalConfig.Instance.JsonOptions);
         }
 
         //protected virtual void OnSizeChanged(double width, double height)
