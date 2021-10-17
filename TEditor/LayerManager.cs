@@ -253,11 +253,7 @@ namespace TEditor
 
         public void EnableClippingMask(Layer layer)
         {
-            if (layer.ClippingMaskBottom)
-            {
-                layer.ClippingMaskBottom = false;
-                // TODO 查找上面的图层重新确定OpacityMask
-            }
+            Brush newOpacityMask = null;
             layer.ClippingMaskEnable = true;
             for (int i = ZIndexToIndex(layer.ZIndex) + 1; i < Layers.Count; i++)
             {
@@ -268,9 +264,29 @@ namespace TEditor
                 else
                 {
                     // 如果已经是Bottom重新设置一遍也没关系
-                    Layers[i].ClippingMaskBottom = true; 
-                    layer.OpacityMask = new VisualBrush(Layers[i]);
+                    Layers[i].ClippingMaskBottom = true;
+                    newOpacityMask = new VisualBrush(Layers[i]);
+                    layer.OpacityMask = newOpacityMask;
                     break;
+                }
+            }
+            if (layer.ClippingMaskBottom)
+            {
+                layer.ClippingMaskBottom = false;
+                // 查找上面的图层重新确定OpacityMask
+                if (newOpacityMask != null)
+                {
+                    for (int i = ZIndexToIndex(layer.ZIndex) - 1; i >= 0; i--)
+                    {
+                        if (Layers[i].ClippingMaskEnable)
+                        {
+                            Layers[i].OpacityMask = newOpacityMask;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }
