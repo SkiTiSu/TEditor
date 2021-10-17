@@ -292,7 +292,19 @@ namespace TEditor
                     break;
                 }
             }
-            // TODO 查找上面的图层有没有剪贴图层，取消
+            // 查找上面的图层有没有剪贴图层，如有则取消
+            for (int i = ZIndexToIndex(layer.ZIndex) - 1; i >= 0; i--)
+            {
+                if (Layers[i].ClippingMaskEnable)
+                {
+                    Layers[i].ClippingMaskEnable = false;
+                    Layers[i].OpacityMask = null;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
         public void RefreshClippingMask()
