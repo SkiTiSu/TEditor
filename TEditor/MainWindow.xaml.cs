@@ -51,7 +51,7 @@ namespace TEditor
             set
             {
                 currentFileName = value;
-                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 0.1.0";
+                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 0.1.1";
             }
         }
 
@@ -280,40 +280,64 @@ namespace TEditor
             };
             if (dlg.ShowDialog() == true)
             {
-                SaveContent(dlg.FileName);
+                ExportMode = true;
+                ExportElementToImage(canvasContent, dlg.FileName);
+                ExportMode = false;
             }
         }
 
-        private void SaveContent(string filename)
+        private void ExportElementToImage(UIElement element, string filename, int step = 0, int deltaX = 0, int deltaY = 0)
         {
-            canvasContentBackground.Visibility = Visibility.Hidden;
-            //wait for render complete
-            canvasContent.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.SystemIdle, new Action(() => { }));
-            WriteToPng(canvasContent, filename);
-            canvasContentBackground.Visibility = Visibility.Visible;
-        }
-
-        public void WriteToPng(UIElement element, string filename)
-        {
-            var rect = new Rect(element.RenderSize);
-            var visual = new DrawingVisual();
-
-            using (var dc = visual.RenderOpen())
-            {
-                dc.DrawRectangle(new VisualBrush(element), null, rect);
-            }
-
-            var bitmap = new RenderTargetBitmap(
+            Rect rect = new(element.RenderSize);
+            RenderTargetBitmap bitmap = new(
                 (int)rect.Width, (int)rect.Height, 96, 96, PixelFormats.Default);
-            bitmap.Render(visual);
 
-            var encoder = new PngBitmapEncoder();
+            for (int i = 0; i <= step; i++)
+            {
+                if (i > 0)
+                {
+                    bool moveSuccess = moveDataSelection(1);
+                    if (!moveSuccess)
+                    {
+                        break;
+                    }
+                    rect.X += deltaX;
+                    rect.Y += deltaY;
+                }
+                element.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.SystemIdle, new Action(() => { }));
+
+                DrawingVisual dVisual = new();
+                using (DrawingContext dc = dVisual.RenderOpen())
+                {
+                    dc.DrawRectangle(new VisualBrush(element), null, rect);
+                }
+                bitmap.Render(dVisual);
+            }
+
+            PngBitmapEncoder encoder = new();
             //TODO: 是否能添加BitmapMetadata
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
 
-            using (var file = File.OpenWrite(filename))
+            using FileStream file = File.OpenWrite(filename);
+            encoder.Save(file);
+        }
+
+        private bool exportMode = false;
+        public bool ExportMode
+        {
+            get => exportMode;
+            set
             {
-                encoder.Save(file);
+                if (value)
+                {
+                    canvasContentBackground.Visibility = Visibility.Hidden;
+                    //wait for render complete
+                    canvasContent.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.SystemIdle, new Action(() => { }));
+                }
+                else
+                {
+                    canvasContentBackground.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -489,7 +513,7 @@ namespace TEditor
             windowBatchExport = new Window()
             {
                 Width = 400,
-                Height = 150,
+                Height = 300,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
@@ -509,12 +533,43 @@ namespace TEditor
         {
             var model = beView.model;
             windowBatchExport.Close();
-            for (int i = 0; i <= currentDataTable.Rows.Count - 1; i++)
+            ExportMode = true;
+            if (model.RepeatTimes == 0)
             {
-                dataGridMain.SelectedIndex = i;
-                string name = ReplaceVarTemplate(model.FileNameTemplate, i);
-                name = name.Replace("{index}", (i + 1).ToString());
-                SaveContent(System.IO.Path.Combine(model.ExportFolder, name + ".png"));
+                for (int i = 0; i <= currentDataTable.Rows.Count - 1; i++)
+                {
+                    dataGridMain.SelectedIndex = i;
+                    string name = ReplaceVarTemplate(model.FileNameTemplate, i);
+                    name = name.Replace("{index}", (i + 1).ToString());
+                    ExportElementToImage(canvasContent, Path.Combine(model.ExportFolder, name + ".png"));
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= currentDataTable.Rows.Count - 1; i += model.RepeatTimes + 1)
+                {
+                    dataGridMain.SelectedIndex = i;
+                    string name = ReplaceVarTemplate(model.FileNameTemplate, i);
+                    name = name.Replace("{index}", $"{i + 1}-{i + 1 + model.RepeatTimes}");
+                    ExportElementToImage(canvasContent, Path.Combine(model.ExportFolder, name + ".png"),
+                        model.RepeatTimes, model.DeltaX, model.DeltaY);
+                }
+            }
+            ExportMode = false;
+        }
+
+        private bool moveDataSelection(int delta)
+        {
+            // TODO 是用Items.Count还是currentDataTable.Rows.Count
+            int newIndex = dataGridMain.SelectedIndex + delta;
+            if (newIndex < dataGridMain.Items.Count && newIndex >= 0)
+            {
+                dataGridMain.SelectedIndex = newIndex;
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

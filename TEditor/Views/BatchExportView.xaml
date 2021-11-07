@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TEditor.Views"
-             xmlns:Models="clr-namespace:TEditor.Models" x:Class="TEditor.Views.BatchExportView"
+             xmlns:ViewModels="clr-namespace:TEditor.ViewModels"
+             x:Class="TEditor.Views.BatchExportView"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
     <UserControl.Resources>
@@ -21,19 +22,33 @@
         </Style>
     </UserControl.Resources>
     <UserControl.DataContext>
-        <Models:BatchExportModel/>
+        <ViewModels:BatchExportViewModel/>
     </UserControl.DataContext>
     <Grid>
         <StackPanel Orientation="Vertical">
             <DockPanel>
                 <TextBlock Style="{StaticResource KaoRight}">保存目录</TextBlock>
-                <Button x:Name="buttonSelectExportFolder" Width="54" DockPanel.Dock="Right" Click="buttonSelectExportFolder_Click">选择...</Button>
+                <Button x:Name="buttonSelectExportFolder" Width="54" DockPanel.Dock="Right" Click="buttonSelectExportFolder_Click" Content="选择..."/>
                 <TextBox Text="{Binding ExportFolder}" Width="287" />
             </DockPanel>
             <DockPanel>
                 <TextBlock Style="{StaticResource KaoRight}">文件名模板</TextBlock>
                 <TextBlock DockPanel.Dock="Right" Text=".png"/>
                 <TextBox Text="{Binding FileNameTemplate}"/>
+            </DockPanel>
+            <TextBlock>以下选项针对副榜等一页上需要重复多次的设置</TextBlock>
+            <TextBlock>（此时文件名模板仅支持index变量）</TextBlock>
+            <DockPanel>
+                <TextBlock>副本个数</TextBlock>
+                <TextBox Text="{Binding RepeatTimes}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock>X偏移</TextBlock>
+                <TextBox Text="{Binding DeltaX}" />
+            </DockPanel>
+            <DockPanel>
+                <TextBlock>Y偏移</TextBlock>
+                <TextBox Text="{Binding DeltaY}" />
             </DockPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="buttonOK" Content="确定" Width="60" Margin="0 0 20 0"/>

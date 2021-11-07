@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using TEditor.Models;
+using TEditor.ViewModels;
 
 namespace TEditor.Views
 {
@@ -22,7 +22,7 @@ namespace TEditor.Views
     /// </summary>
     public partial class BatchExportView : UserControl
     {
-        internal BatchExportModel model = new BatchExportModel();
+        internal BatchExportViewModel model = new();
         public BatchExportView()
         {
             InitializeComponent();
