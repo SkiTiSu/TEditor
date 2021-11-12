@@ -349,6 +349,11 @@ namespace TEditor
             }
             var dataobject = Clipboard.GetDataObject();
             string data_csv = (string)dataobject.GetData(DataFormats.CommaSeparatedValue);
+            if (data_csv == null)
+            {
+                MessageBox.Show("格式有误，请检查");
+                return;
+            }
             TextReader sr = new StringReader(data_csv);
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {

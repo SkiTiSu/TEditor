@@ -22,11 +22,36 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="buttonOpen" Content="打开" Click="buttonOpen_Click" />
-                <Button x:Name="buttonSave" Content="保存" Click="buttonSave_Click" />
-                <Button x:Name="buttonBatchExport" Content="批量导出" Click="buttonBatchExport_Click"/>
-                <Button x:Name="buttonExport" Content="导出" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonExport_Click"/>
-                <Button x:Name="buttonImportTable" Content="导入数据" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonImportTable_Click" />
+                <Button x:Name="buttonOpen" Click="buttonOpen_Click" >
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconBootstrapIcons Kind="Folder2Open" Width="16" Height="16" Margin="0 0 4 0"/>
+                        <TextBlock Text="打开"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="buttonSave" Click="buttonSave_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconBootstrapIcons Kind="Save2" Width="16" Height="16" Margin="0 0 4 0"/>
+                        <TextBlock Text="保存"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="buttonImportTable" Click="buttonImportTable_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkSpreadsheet" Width="16" Height="16" Margin="0 0 4 0"/>
+                        <TextBlock Text="导入数据"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="buttonBatchExport" Click="buttonBatchExport_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDown" Width="16" Height="16" Margin="0 0 4 0"/>
+                        <TextBlock Text="批量导出"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="buttonExport" Click="buttonExport_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDownFill" Width="16" Height="16" Margin="0 0 4 0"/>
+                        <TextBlock Text="导出当前"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0" Background="#535353">
