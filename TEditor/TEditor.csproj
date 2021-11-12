@@ -25,19 +25,18 @@
     <Resource Include="Resources\media_offline.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="5.6.0" PrivateAssets="All" />
+    <PackageReference Include="Costura.Fody" Version="5.7.0" PrivateAssets="All" />
     <PackageReference Include="CsvHelper" Version="27.1.1" />
     <PackageReference Include="Dirkster.ColorPickerLib" Version="1.6.2" />
-    <PackageReference Include="Dirkster.NumericUpDownLib" Version="2.4.2.2" />
     <PackageReference Include="HandyControl" Version="3.2.0" />
-    <PackageReference Include="MahApps.Metro.IconPacks.BootstrapIcons" Version="4.10.0" />
+    <PackageReference Include="MahApps.Metro.IconPacks.BootstrapIcons" Version="4.11.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
     <PackageReference Include="MimeMapping" Version="1.0.1.37" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" PrivateAssets="All" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
-    <PackageReference Include="ToolGood.Algorithm" Version="2.2.0.1" />
+    <PackageReference Include="ToolGood.Algorithm" Version="2.2.0.2" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
