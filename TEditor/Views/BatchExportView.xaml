@@ -5,70 +5,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TEditor.Views"
              xmlns:ViewModels="clr-namespace:TEditor.ViewModels"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              x:Class="TEditor.Views.BatchExportView"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type StackPanel}">
-            <Setter Property="Margin" Value="4" />
-        </Style>
-        <Style TargetType="{x:Type DockPanel}">
-            <Setter Property="Margin" Value="0,0,0,6" />
-        </Style>
-        <Style x:Key="KaoRight" TargetType="{x:Type TextBlock}">
-            <!--<Setter Property="Width" Value="26" />-->
-            <Setter Property="TextAlignment" Value="Left" />
-            <Setter Property="Margin" Value="0,0,4,0" />
-        </Style>
-    </UserControl.Resources>
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <ViewModels:BatchExportViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" hc:InfoElement.TitlePlacement="Left">
             <DockPanel>
-                <TextBlock Style="{StaticResource KaoRight}">保存目录</TextBlock>
                 <Button x:Name="buttonSelectExportFolder" Width="54" DockPanel.Dock="Right" Click="buttonSelectExportFolder_Click" Content="选择..."/>
-                <TextBox Text="{Binding ExportFolder}" Width="287" />
+                <hc:TextBox hc:InfoElement.Title="保存目录" Text="{Binding ExportFolder}"/>
             </DockPanel>
             <DockPanel>
-                <TextBlock Style="{StaticResource KaoRight}">文件名模板</TextBlock>
                 <TextBlock DockPanel.Dock="Right" Text=".png"/>
-                <TextBox Text="{Binding FileNameTemplate}"/>
+                <hc:TextBox hc:InfoElement.Title="文件名模板" Text="{Binding FileNameTemplate}"/>
             </DockPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <DockPanel Grid.Column="0">
-                    <TextBlock Text="起始"/>
-                    <TextBox Text="{Binding StartAt}"/>
-                </DockPanel>
-                <DockPanel Grid.Column="1">
-                    <TextBlock Text="结束"/>
-                    <TextBox Text="{Binding EndAt}"/>
-                </DockPanel>
+                <hc:TextBox hc:InfoElement.Title="起始" Text="{Binding StartAt}" Grid.Column="0"/>
+                <hc:TextBox hc:InfoElement.Title="结束" Text="{Binding EndAt}" Grid.Column="1"/>
             </Grid>
-
             <TextBlock>以下选项针对副榜等一页上需要重复多次的设置</TextBlock>
             <TextBlock>（此时文件名模板仅支持index变量）</TextBlock>
-            <DockPanel>
-                <TextBlock>副本个数</TextBlock>
-                <TextBox Text="{Binding RepeatTimes}" />
-            </DockPanel>
-            <DockPanel>
-                <TextBlock>X偏移</TextBlock>
-                <TextBox Text="{Binding DeltaX}" />
-            </DockPanel>
-            <DockPanel>
-                <TextBlock>Y偏移</TextBlock>
-                <TextBox Text="{Binding DeltaY}" />
-            </DockPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="buttonOK" Content="确定" Width="60" Margin="0 0 20 0"/>
-                <Button x:Name="buttonCancel" Content="取消" Width="60"/>
-            </StackPanel>
+            <hc:TextBox hc:InfoElement.Title="副本个数" Text="{Binding RepeatTimes}" />
+            <hc:TextBox hc:InfoElement.Title="X偏移" Text="{Binding DeltaX}" />
+            <hc:TextBox hc:InfoElement.Title="Y偏移" Text="{Binding DeltaY}" />
         </StackPanel>
+        <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button x:Name="buttonOK" Content="确定" Width="60"/>
+            <Button x:Name="buttonCancel" Content="取消" Width="60"/>
+        </hc:UniformSpacingPanel>
     </Grid>
 </UserControl>

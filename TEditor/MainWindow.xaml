@@ -21,54 +21,58 @@
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="buttonOpen" Click="buttonOpen_Click" >
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconBootstrapIcons Kind="Folder2Open" Width="16" Height="16" Margin="0 0 4 0"/>
-                        <TextBlock Text="打开"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="buttonSave" Click="buttonSave_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconBootstrapIcons Kind="Save2" Width="16" Height="16" Margin="0 0 4 0"/>
-                        <TextBlock Text="保存"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="buttonImportTable" Click="buttonImportTable_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkSpreadsheet" Width="16" Height="16" Margin="0 0 4 0"/>
-                        <TextBlock Text="导入数据"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="buttonBatchExport" Click="buttonBatchExport_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDown" Width="16" Height="16" Margin="0 0 4 0"/>
-                        <TextBlock Text="批量导出"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="buttonExport" Click="buttonExport_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDownFill" Width="16" Height="16" Margin="0 0 4 0"/>
-                        <TextBlock Text="导出当前"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
+            <ToolBarTray>
+                <ToolBar>
+                    <Button x:Name="buttonOpen" Click="buttonOpen_Click" >
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="Folder2Open" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="打开"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="buttonSave" Click="buttonSave_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="Save2" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="保存"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="buttonImportTable" Click="buttonImportTable_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkSpreadsheet" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="导入数据"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="buttonBatchExport" Click="buttonBatchExport_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDown" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="批量导出"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="buttonExport" Click="buttonExport_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDownFill" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="导出当前"/>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0" Background="#535353">
-            <StackPanel Orientation="Vertical">
-                <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
-                    <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
-                </Button>
-                <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
-                    <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
-                </Button>
-                <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
-                    <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
-                </Button>
-                <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
-                    <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
-                </Button>
-            </StackPanel>
+            <ToolBarTray Orientation="Vertical">
+                <ToolBar Width="36">
+                    <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
+                        <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
+                    </Button>
+                    <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
+                        <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
+                    </Button>
+                    <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
+                        <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
+                    </Button>
+                    <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
+                        <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>

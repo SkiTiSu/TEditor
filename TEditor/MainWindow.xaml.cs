@@ -21,13 +21,16 @@ using TEditor.Messages;
 using TEditor.Models;
 using TEditor.ViewModels;
 using TEditor.Views;
+using HandyControl.Controls;
+using Window = HandyControl.Controls.Window;
+using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace TEditor
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : HandyControl.Controls.GlowWindow
+    public partial class MainWindow : GlowWindow
     {
         private LayerManager _layerManager;
         private DocModel model;
@@ -149,7 +152,7 @@ namespace TEditor
 
         private void textboxCanvasScale_LostFocus(object sender, RoutedEventArgs e)
         {
-            var text = (sender as TextBox).Text;
+            var text = (sender as System.Windows.Controls.TextBox).Text;
             text = text.Replace("%", "");
             int newScale;
             if (int.TryParse(text, out newScale))
@@ -343,6 +346,7 @@ namespace TEditor
         private DataTable currentDataTable;
         private void buttonImportTable_Click(object sender, RoutedEventArgs e)
         {
+            
             if (MessageBox.Show("请连同标题行复制到剪贴板后，点击确定\r\n支持Excel、CSV文件直接复制", "锵锵锵") != MessageBoxResult.OK)
             {
                 return;
@@ -527,6 +531,7 @@ namespace TEditor
             beView.model.EndAt = dataGridMain.Items.Count;
             beView.buttonOK.Click += ButtonStartBatchExport_Click;
             beView.buttonCancel.Click += ButtonCancel_Click;
+            beView.Padding = new Thickness(10);
             windowBatchExport.Content = beView;
             windowBatchExport.ShowDialog();
         }
