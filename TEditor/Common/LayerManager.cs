@@ -46,6 +46,7 @@ namespace TEditor
                 OnSelectionChanged?.Invoke(this, _selectedLayer);
             }
         }
+        public Layer SelectedLayer => SelectedLayerInner.ParentCanvas;
 
         public LayerManager(Canvas canvasLayout, Canvas canvasContent)
         {

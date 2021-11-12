@@ -65,8 +65,7 @@ namespace TEditor
             GlobalCache.Init();
 
             _layerManager = new LayerManager(canvasLayout, canvasContent);
-            listBoxLayers.ItemsSource = _layerManager.Layers;
-            listBoxLayers.LayerManager = _layerManager;
+            listBoxLayers.VM.LayerManager = _layerManager;
             _layerManager.OnSelectionChanged += _layerManager_OnSelectionChanged;
             _layerManager.LayerVisableChanged += _layerManager_LayerVisableChanged;
 
@@ -600,20 +599,5 @@ namespace TEditor
             _layerManager.AddWithKey(LayerType.Rectangle);
         }
         #endregion
-
-        private void buttonDuplicateLayer_Click(object sender, RoutedEventArgs e)
-        {
-            if (_layerManager.SelectedLayerInner != null)
-            {
-                var layer = _layerManager.SelectedLayerInner.Parent as Layer;
-                var model = layer.ToLayerModel();
-                model.Id = Guid.NewGuid().ToString();
-                // TODO 改进以避免序列化反序列化
-                string json = JsonSerializer.Serialize(model, GlobalConfig.Instance.JsonOptions);
-                LayerModel layerModel = JsonSerializer.Deserialize<LayerModel>(json);
-
-                _layerManager.AddFromModel(layerModel);
-            }
-        }
     }
 }

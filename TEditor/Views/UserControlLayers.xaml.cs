@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Linq;
 using System.Collections.ObjectModel;
 using TEditor.Layers;
+using TEditor.ViewModels;
 
 namespace TEditor
 {
@@ -22,26 +16,18 @@ namespace TEditor
     /// </summary>
     public partial class UserControlLayers : UserControl
     {
-        private ObservableCollection<Layer> _layers;
-        public ObservableCollection<Layer> ItemsSource
-        {
-            get => _layers; 
-            set 
-            {
-                _layers = value;
-                listBoxLayers.ItemsSource = value; 
-            } 
-        }
+        public UserControlLayersViewModel VM { get; } = new();
+        public ObservableCollection<Layer> Layers => VM.Layers;
 
-        public LayerManager LayerManager { get; set; }
         public UserControlLayers()
         {
             InitializeComponent();
+            DataContext = VM;
         }
-
 
         private bool isDragging;
         private Point firstPoint;
+        private int draggingIndex;
         private void ListBoxItem_MouseMove(object sender, MouseEventArgs e)
         {
             if (sender is ListBoxItem && e.LeftButton == MouseButtonState.Pressed)
@@ -56,6 +42,7 @@ namespace TEditor
                     if ((e.GetPosition(this) - firstPoint).Length > 5)
                     {
                         ListBoxItem draggedItem = sender as ListBoxItem;
+                        draggingIndex = listBoxLayers.Items.IndexOf(draggedItem.DataContext as Layer);
                         DragDrop.DoDragDrop(draggedItem, new DataObject("layer", draggedItem.DataContext), DragDropEffects.Move);
                     }
                 }
@@ -66,59 +53,55 @@ namespace TEditor
             }
         }
 
-        private void listbox_Drop(object sender, DragEventArgs e)
+        private void ListBoxItem_DragEnter(object sender, DragEventArgs e)
         {
-            if (sender is ListBoxItem)
+            if (sender is ListBoxItem item)
             {
-                Layer droppedData = e.Data.GetData("layer") as Layer;
-                Layer target = ((ListBoxItem)(sender)).DataContext as Layer;
+                Layer target = item.DataContext as Layer;
+                int targetIndex = listBoxLayers.Items.IndexOf(target);
 
-                int removedIdx = listBoxLayers.Items.IndexOf(droppedData);
-                int targetIdx = listBoxLayers.Items.IndexOf(target);
-
-                if (removedIdx < targetIdx)
+                if (draggingIndex == targetIndex)
                 {
-                    _layers.Insert(targetIdx + 1, droppedData);
-                    _layers.RemoveAt(removedIdx);
+                    VM.DragShowTop = false;
+                    VM.DragShowBottom = false;
+                }
+                else if (draggingIndex > targetIndex)
+                {
+                    VM.DragShowTop = true;
+                    VM.DragShowBottom = false;
                 }
                 else
                 {
-                    int remIdx = removedIdx + 1;
-                    if (listBoxLayers.Items.Count + 1 > remIdx)
-                    {
-                        _layers.Insert(targetIdx, droppedData);
-                        _layers.RemoveAt(remIdx);
-                    }
+                    VM.DragShowTop = false;
+                    VM.DragShowBottom = true;
                 }
-                //ItemsSource = _layers;
-                
             }
         }
 
-        private void MenuDelete_Click(object sender, RoutedEventArgs e)
+        private void ListBoxItem_Drop(object sender, DragEventArgs e)
         {
-            Layer layer = GetLayerFromMenuItem(sender);
-            LayerManager.Remove(layer);
-        }
+            if (sender is ListBoxItem item)
+            {
+                Layer droppedData = e.Data.GetData("layer") as Layer;
+                Layer target = item.DataContext as Layer;
 
-        private void MenuEnableClippingMask_Click(object sender, RoutedEventArgs e)
-        {
-            Layer layer = GetLayerFromMenuItem(sender);
-            LayerManager.EnableClippingMask(layer);
-        }
+                int targetIndex = listBoxLayers.Items.IndexOf(target);
 
-        private void MenuDisableClippingMask_Click(object sender, RoutedEventArgs e)
-        {
-            Layer layer = GetLayerFromMenuItem(sender);
-            LayerManager.DisableClippingMask(layer);
-        }
-
-        private Layer GetLayerFromMenuItem(object sender)
-        {
-            return ((((sender as MenuItem).Parent as ContextMenu)
-                .Parent as System.Windows.Controls.Primitives.Popup)
-                .PlacementTarget as ListBoxItem)
-                .DataContext as Layer;
+                if (draggingIndex < targetIndex)
+                {
+                    Layers.Insert(targetIndex + 1, droppedData);
+                    Layers.RemoveAt(draggingIndex);
+                }
+                else
+                {
+                    int remIdx = draggingIndex + 1;
+                    if (listBoxLayers.Items.Count + 1 > remIdx)
+                    {
+                        Layers.Insert(targetIndex, droppedData);
+                        Layers.RemoveAt(remIdx);
+                    }
+                }
+            }
         }
     }
 }

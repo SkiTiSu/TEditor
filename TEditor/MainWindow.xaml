@@ -86,8 +86,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="4"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <TabControl Grid.Row="0">
                 <TabItem Header="属性">
@@ -102,12 +101,11 @@
 
             <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Black"/>
 
-            <StackPanel Grid.Row="2">
-                <Button x:Name="buttonDuplicateLayer" Content="复制图层" Height="20" Padding="0" Click="buttonDuplicateLayer_Click"/>
-            </StackPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="3">
-                <local:UserControlLayers x:Name="listBoxLayers" />
-            </ScrollViewer>
+            <TabControl Grid.Row="2">
+                <TabItem Header="图层">
+                    <local:UserControlLayers x:Name="listBoxLayers"/>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Grid>
 </hc:GlowWindow>
