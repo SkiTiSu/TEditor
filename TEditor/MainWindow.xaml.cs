@@ -513,11 +513,14 @@ namespace TEditor
             windowBatchExport = new Window()
             {
                 Width = 400,
-                Height = 300,
+                Height = 350,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
             beView = new BatchExportView();
+            beView.model.ExportFolder = Environment.CurrentDirectory;
+            beView.model.StartAt = 1;
+            beView.model.EndAt = dataGridMain.Items.Count;
             beView.buttonOK.Click += ButtonStartBatchExport_Click;
             beView.buttonCancel.Click += ButtonCancel_Click;
             windowBatchExport.Content = beView;
@@ -536,7 +539,7 @@ namespace TEditor
             ExportMode = true;
             if (model.RepeatTimes == 0)
             {
-                for (int i = 0; i <= currentDataTable.Rows.Count - 1; i++)
+                for (int i = model.StartAt - 1; i <= model.EndAt - 1; i++)
                 {
                     dataGridMain.SelectedIndex = i;
                     string name = ReplaceVarTemplate(model.FileNameTemplate, i);
@@ -546,7 +549,7 @@ namespace TEditor
             }
             else
             {
-                for (int i = 0; i <= currentDataTable.Rows.Count - 1; i += model.RepeatTimes + 1)
+                for (int i = model.StartAt - 1; i <= model.EndAt - 1; i += model.RepeatTimes + 1)
                 {
                     dataGridMain.SelectedIndex = i;
                     string name = ReplaceVarTemplate(model.FileNameTemplate, i);

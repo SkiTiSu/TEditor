@@ -14,6 +14,10 @@ namespace TEditor.ViewModels
         [ObservableProperty]
         private string fileNameTemplate = "Rank_{index}";
         [ObservableProperty]
+        private int startAt;
+        [ObservableProperty]
+        private int endAt;
+        [ObservableProperty]
         private int repeatTimes = 0;
         [ObservableProperty]
         private int deltaX = 0;

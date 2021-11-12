@@ -36,6 +36,21 @@
                 <TextBlock DockPanel.Dock="Right" Text=".png"/>
                 <TextBox Text="{Binding FileNameTemplate}"/>
             </DockPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
+                    <TextBlock Text="起始"/>
+                    <TextBox Text="{Binding StartAt}"/>
+                </DockPanel>
+                <DockPanel Grid.Column="1">
+                    <TextBlock Text="结束"/>
+                    <TextBox Text="{Binding EndAt}"/>
+                </DockPanel>
+            </Grid>
+
             <TextBlock>以下选项针对副榜等一页上需要重复多次的设置</TextBlock>
             <TextBlock>（此时文件名模板仅支持index变量）</TextBlock>
             <DockPanel>
