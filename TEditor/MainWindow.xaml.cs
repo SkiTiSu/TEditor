@@ -55,7 +55,7 @@ namespace TEditor
             set
             {
                 currentFileName = value;
-                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                this.Title = currentFileName + " - TEditor by 四季天书 " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
 
@@ -90,7 +90,6 @@ namespace TEditor
                 // TODO 这里会不会有效率问题
                 _layerManager.Layers.First(x => x.Id == m.Value.LayerId).Visible = m.Value.Visible;
             });
-
         }
 
         string LayerIdVisibleChangedByFormatCondition = string.Empty;
@@ -139,9 +138,33 @@ namespace TEditor
             placeLayerControl.Children.Add(docControl);
         }
 
+        private int ScrollLeavePx = 80;
         private void ArrangeControl()
         {
             _layerManager.Arrage();
+            
+            double contentWidth = canvasContent.DesiredSize.Width;
+            double contentHeight = canvasContent.DesiredSize.Height;
+            if (contentWidth > canvasLayout.ActualWidth || contentHeight > canvasLayout.ActualHeight)
+            {
+                scrollBarHorizontal.Visibility = Visibility.Visible;
+                scrollBarHorizontal.Maximum = canvasLayout.ActualWidth / 2 + contentWidth / 2 - ScrollLeavePx;
+                scrollBarHorizontal.Minimum = -scrollBarHorizontal.Maximum;
+                scrollBarHorizontal.ViewportSize = canvasLayout.ActualWidth;
+                scrollBarHorizontal.Value = canvasLayout.ActualWidth / 2 - canvasContent.DesiredSize.Width / 2 - Canvas.GetLeft(canvasContent);
+
+                scrollBarVertical.Visibility = Visibility.Visible;
+                scrollBarVertical.Maximum = canvasLayout.ActualHeight / 2 + contentHeight / 2 - ScrollLeavePx;
+                scrollBarVertical.Minimum = -scrollBarVertical.Maximum;
+                scrollBarVertical.ViewportSize = canvasLayout.ActualHeight;
+                scrollBarVertical.Value = canvasLayout.ActualHeight / 2 - canvasContent.DesiredSize.Height / 2 - Canvas.GetTop(canvasContent);
+
+            }
+            else
+            {
+                scrollBarHorizontal.Visibility = Visibility.Hidden;
+                scrollBarVertical.Visibility = Visibility.Hidden;
+            }
         }
 
         private void MoveCC(double dx, double dy)
@@ -180,6 +203,17 @@ namespace TEditor
                 canvasContent.LayoutTransform = new ScaleTransform(tscale, tscale);
                 ArrangeControl();
             }
+        }
+
+        private void scrollBarHorizontal_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            Canvas.SetLeft(canvasContent, canvasLayout.ActualWidth / 2 - canvasContent.DesiredSize.Width / 2 - e.NewValue);
+        }
+
+        private void scrollBarVertical_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            Canvas.SetTop(canvasContent, canvasLayout.ActualHeight / 2 - canvasContent.DesiredSize.Height / 2 - e.NewValue);
+
         }
 
         #region 鼠标键盘快捷键
@@ -610,5 +644,10 @@ namespace TEditor
             _layerManager.AddWithKey(LayerType.Rectangle);
         }
         #endregion
+
+        private void GlowWindow_ContentRendered(object sender, EventArgs e)
+        {
+            ArrangeControl();
+        }
     }
 }

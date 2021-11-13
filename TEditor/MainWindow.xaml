@@ -7,9 +7,9 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views"
         mc:Ignorable="d"
-        Title="TEditor" Height="450" Width="800" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
+        Title="TEditor" Height="500" Width="900" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         Icon="Resources/Te.ico"
-        ActiveGlowColor="{DynamicResource PrimaryColor}">
+        ActiveGlowColor="{DynamicResource PrimaryColor}" ContentRendered="GlowWindow_ContentRendered">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -18,7 +18,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="36"/>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="3"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
@@ -57,40 +57,42 @@
                 </ToolBar>
             </ToolBarTray>
         </Grid>
-        <Grid Grid.Row="1" Grid.Column="0" Background="#535353">
-            <ToolBarTray Orientation="Vertical">
-                <ToolBar Width="36">
-                    <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
-                        <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
-                    </Button>
-                    <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
-                        <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
-                    </Button>
-                    <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
-                        <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
-                    </Button>
-                    <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
-                        <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
-        </Grid>
+        <ToolBarTray Grid.Row="1" Grid.Column="0" Orientation="Vertical" Background="{StaticResource RegionBrush}">
+            <ToolBar Width="36">
+                <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
+                </Button>
+                <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
+                    <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="4" />
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="3" />
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="30" />
+                    <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
                 <Canvas x:Name="canvasLayout" Grid.Row="0" MouseDown="canvasLayout_MouseDown" MouseMove="canvasLayout_MouseMove" MouseUp="canvasLayout_MouseUp" Background="#FF282828" ClipToBounds="True" MouseWheel="canvasLayout_MouseWheel" Focusable="True" KeyDown="canvasLayout_KeyDown" >
                     <Canvas x:Name="canvasContent" Width="192" Height="108" Canvas.Left="31" Canvas.Top="27" ClipToBounds="True">
                         <Canvas x:Name="canvasContentBackground" Width="192" Height="108" Panel.ZIndex="-99" MouseLeftButtonUp="canvasContentBackground_MouseLeftButtonUp" >
                             <Canvas.Background>
-                                <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,16,16" ViewportUnits="Absolute">
                                     <DrawingBrush.Drawing>
                                         <DrawingGroup>
                                             <GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z" Brush="White"/>
@@ -103,20 +105,22 @@
                         </Canvas>
                     </Canvas>
                 </Canvas>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <DockPanel Grid.Row="1">
                     <TextBox x:Name="textboxCanvasScale" Text="100%" Width="50" LostFocus="textboxCanvasScale_LostFocus" />
-                </StackPanel>
+                    <ScrollBar x:Name="scrollBarHorizontal" Orientation="Horizontal" Scroll="scrollBarHorizontal_Scroll" Style="{StaticResource ScrollBarBaseStyle}" LargeChange="10" />
+                </DockPanel>
+                <ScrollBar x:Name="scrollBarVertical" Grid.Column="1" Orientation="Vertical" Scroll="scrollBarVertical_Scroll" Style="{StaticResource ScrollBarBaseStyle}" LargeChange="10" />
             </Grid>
-            <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Black"/>
+            <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="Black"/>
             <DataGrid Grid.Row="2" x:Name="dataGridMain"  AutoGenerateColumns="True" SelectionChanged="dataGridMain_SelectionChanged" MinColumnWidth="80"/>
         </Grid>
-        <GridSplitter Grid.Row="1" Grid.Column="2" Width="4" HorizontalAlignment="Stretch" Background="Black"/>
+        <GridSplitter Grid.Row="1" Grid.Column="2" Width="3" HorizontalAlignment="Stretch" Background="Black"/>
 
         <Grid Grid.Row="1" Grid.Column="3" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*"/>
-                <RowDefinition Height="4"/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TabControl Grid.Row="0">
                 <TabItem Header="属性">
@@ -129,7 +133,7 @@
                 </TabItem>
             </TabControl>
 
-            <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Black"/>
+            <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="Black"/>
 
             <TabControl Grid.Row="2">
                 <TabItem Header="图层">
