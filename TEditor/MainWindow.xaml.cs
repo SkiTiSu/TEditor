@@ -382,12 +382,12 @@ namespace TEditor
         private void buttonImportTable_Click(object sender, RoutedEventArgs e)
         {
             
-            if (MessageBox.Show("请连同标题行复制到剪贴板后，点击确定\r\n支持Excel、CSV文件直接复制", "锵锵锵") != MessageBoxResult.OK)
+            if (MessageBox.Show("请从Excel中，连同标题行复制后，点击确定", "锵锵锵") != MessageBoxResult.OK)
             {
                 return;
             }
             var dataobject = Clipboard.GetDataObject();
-            string data_csv = (string)dataobject.GetData(DataFormats.CommaSeparatedValue);
+            string data_csv = (string)dataobject.GetData(DataFormats.UnicodeText);
             if (data_csv == null)
             {
                 MessageBox.Show("格式有误，请检查");
@@ -397,6 +397,7 @@ namespace TEditor
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 BadDataFound = null,
+                Delimiter = "\t",
             };
             var reader = new CsvReader(sr, config);
             IEnumerable<dynamic> records = reader.GetRecords<dynamic>();
