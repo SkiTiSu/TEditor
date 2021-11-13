@@ -1,14 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0-windows</TargetFrameworks>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
     <OutputType>WinExe</OutputType>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <UseWPF>true</UseWPF>
     <LangVersion>9.0</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AssemblyVersion>0.1.2</AssemblyVersion>
+    <Copyright>Copyright © 2020-2021 SkiTiSu</Copyright>
+    <ApplicationIcon>Resources\Te.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Te.ico" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="FodyWeavers.xsd">
       <SubType>Designer</SubType>

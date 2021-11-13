@@ -24,6 +24,7 @@ using TEditor.Views;
 using HandyControl.Controls;
 using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
+using System.Reflection;
 
 namespace TEditor
 {
@@ -54,7 +55,7 @@ namespace TEditor
             set
             {
                 currentFileName = value;
-                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 0.1.1";
+                this.Title = currentFileName + " - TEditor by 四季天书 技术预览版 " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
 

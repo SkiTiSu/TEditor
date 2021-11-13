@@ -7,7 +7,8 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views"
         mc:Ignorable="d"
-        Title="TEditor by 四季天书 技术预览版 ?.?.?" Height="450" Width="800" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
+        Title="TEditor" Height="450" Width="800" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
+        Icon="Resources/Te.ico"
         ActiveGlowColor="{DynamicResource PrimaryColor}">
     <Grid>
         <Grid.RowDefinitions>
