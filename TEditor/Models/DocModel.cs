@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace TEditor.Models
 {
-    public class DocModel : INotifyPropertyChanged
+    public class DocModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public DocModel()
         {
             FormatConditionGroups.Add(new FormatConditionGroupModel()

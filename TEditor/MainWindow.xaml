@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views"
+        xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views" xmlns:viewmodels="clr-namespace:TEditor.ViewModels" 
         mc:Ignorable="d"
-        Title="TEditor" Height="500" Width="900" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        Title="{Binding Title}" Height="500" Width="900" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         Icon="Resources/Te.ico"
         ActiveGlowColor="{DynamicResource PrimaryColor}" ContentRendered="GlowWindow_ContentRendered">
     <Grid>
@@ -24,13 +25,13 @@
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
             <ToolBarTray>
                 <ToolBar>
-                    <Button x:Name="buttonOpen" Click="buttonOpen_Click" >
+                    <Button Command="{Binding OpenCommand}">
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconBootstrapIcons Kind="Folder2Open" Width="16" Height="16" Margin="0 0 4 0"/>
                             <TextBlock Text="打开"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="buttonSave" Click="buttonSave_Click">
+                    <Button Command="{Binding SaveCommand}">
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconBootstrapIcons Kind="Save2" Width="16" Height="16" Margin="0 0 4 0"/>
                             <TextBlock Text="保存"/>
@@ -59,16 +60,16 @@
         </Grid>
         <ToolBarTray Grid.Row="1" Grid.Column="0" Orientation="Vertical" Background="{StaticResource RegionBrush}">
             <ToolBar Width="36">
-                <Button x:Name="buttonAddText" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddText_Click" Padding="4">
+                <Button HorizontalAlignment="Stretch" Command="{Binding AddTextCommand}">
                     <iconPacks:PackIconBootstrapIcons Kind="Fonts" Width="14" Height="14"/>
                 </Button>
-                <Button x:Name="buttonAddImage" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddImage_Click" Padding="4">
+                <Button HorizontalAlignment="Stretch" Command="{Binding AddImageCommand}">
                     <iconPacks:PackIconBootstrapIcons Kind="Image" Width="14" Height="14"/>
                 </Button>
-                <Button x:Name="buttonAddEllipse" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddEllipse_Click" Padding="4">
+                <Button HorizontalAlignment="Stretch" Command="{Binding AddEllipseCommand}">
                     <iconPacks:PackIconBootstrapIcons Kind="Circle" Width="14" Height="14"/>
                 </Button>
-                <Button x:Name="buttonAddRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="buttonAddRectangle_Click" Padding="4">
+                <Button HorizontalAlignment="Stretch" Command="{Binding AddRectangleCommand}">
                     <iconPacks:PackIconBootstrapIcons Kind="Square" Width="14" Height="14"/>
                 </Button>
             </ToolBar>
@@ -89,8 +90,8 @@
                     <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
                 <Canvas x:Name="canvasLayout" Grid.Row="0" MouseDown="canvasLayout_MouseDown" MouseMove="canvasLayout_MouseMove" MouseUp="canvasLayout_MouseUp" Background="#FF282828" ClipToBounds="True" MouseWheel="canvasLayout_MouseWheel" Focusable="True" KeyDown="canvasLayout_KeyDown" >
-                    <Canvas x:Name="canvasContent" Width="192" Height="108" Canvas.Left="31" Canvas.Top="27" ClipToBounds="True">
-                        <Canvas x:Name="canvasContentBackground" Width="192" Height="108" Panel.ZIndex="-99" MouseLeftButtonUp="canvasContentBackground_MouseLeftButtonUp" >
+                    <Canvas x:Name="canvasContent" Width="{Binding DocVm.Width}" Height="{Binding DocVm.Height}" Canvas.Left="31" Canvas.Top="27" ClipToBounds="True">
+                        <Canvas x:Name="canvasContentBackground" Width="{Binding DocVm.Width}" Height="{Binding DocVm.Height}" Panel.ZIndex="-99" MouseLeftButtonUp="canvasContentBackground_MouseLeftButtonUp" >
                             <Canvas.Background>
                                 <DrawingBrush TileMode="Tile" Viewport="0,0,16,16" ViewportUnits="Absolute">
                                     <DrawingBrush.Drawing>
@@ -129,7 +130,7 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="条件格式">
-                    <views:FormatConditionGroups x:Name="controlFormatConditionGroups"/>
+                    <views:FormatConditionGroups DataContext="{Binding DocVm.FormatConditionGroupsVm}"/>
                 </TabItem>
             </TabControl>
 

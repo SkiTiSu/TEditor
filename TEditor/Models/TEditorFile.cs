@@ -11,7 +11,7 @@ namespace TEditor
     public class TEditorFile
     {
         public int VersionCode { get; set; } = 0;
-        public DocModel DocModel { get; set; }
-        public LayerModel[] Layers { get; set; }
+        public DocModel DocModel { get; set; } = new();
+        public LayerModel[] Layers { get; set; } = new LayerModel[0];
     }
 }

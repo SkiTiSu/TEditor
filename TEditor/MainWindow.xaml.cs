@@ -8,23 +8,18 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using TEditor.Converters;
 using TEditor.Layers;
 using TEditor.Messages;
-using TEditor.Models;
 using TEditor.ViewModels;
 using TEditor.Views;
 using HandyControl.Controls;
 using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
-using System.Reflection;
 
 namespace TEditor
 {
@@ -34,30 +29,8 @@ namespace TEditor
     public partial class MainWindow : GlowWindow
     {
         private LayerManager _layerManager;
-        private DocModel model;
-        private DocModel Model
-        {
-            get => model;
-            set
-            {
-                model = value;
-                canvasContent.Width = model.Width;
-                canvasContentBackground.Width = model.Width;
-                canvasContent.Height = model.Height;
-                canvasContentBackground.Height = model.Height;
-            }
-        }
 
-        private string currentFileName;
-        private string CurrentFileName
-        {
-            get => currentFileName;
-            set
-            {
-                currentFileName = value;
-                this.Title = currentFileName + " - TEditor by 四季天书 " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
+        private MainViewModel Vm { get; set; }
 
         public MainWindow()
         {
@@ -73,16 +46,10 @@ namespace TEditor
             _layerManager.OnSelectionChanged += _layerManager_OnSelectionChanged;
             _layerManager.LayerVisableChanged += _layerManager_LayerVisableChanged;
 
-            Model = new DocModel();
-            CurrentFileName = "未命名-1.ted";
             Scale = 100;
             //TODO: 替身图层没有一起调整顺序
-            SwitchToDocControl();
-            Model.PropertyChanged += Model_PropertyChanged;
 
             // 条件格式
-            FormatConditionGroupsViewModel formats = new(Model.FormatConditionGroups);
-            controlFormatConditionGroups.DataContext = formats;
 
             WeakReferenceMessenger.Default.Register<ChangeLayerVisibleMessage>(this, (r, m) =>
             {
@@ -90,6 +57,17 @@ namespace TEditor
                 // TODO 这里会不会有效率问题
                 _layerManager.Layers.First(x => x.Id == m.Value.LayerId).Visible = m.Value.Visible;
             });
+
+            Vm = new(_layerManager);
+            Vm.Model = new();
+            Vm.CurrentFileName = "未命名-1.ted";
+            this.DataContext = Vm;
+
+            docControl = new()
+            {
+                DataContext = Vm.DocVm
+            };
+            SwitchToDocControl();
         }
 
         string LayerIdVisibleChangedByFormatCondition = string.Empty;
@@ -109,19 +87,15 @@ namespace TEditor
             //TODO: 清除已删除图层
         }
 
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            Model = Model;
-            // TODO 更换为绑定
-        }
-
         private void _layerManager_OnSelectionChanged(object sender, LayerInner e)
         {
             placeLayerControl.Children.Clear();
             if (e != null)
             {
-                LayerCommonControl lc = new LayerCommonControl();
-                lc.DataContext = e;
+                LayerCommonControl lc = new()
+                {
+                    DataContext = e
+                };
                 placeLayerControl.Children.Add(lc);
                 placeLayerControl.Children.Add(e.LayerControl);
             }
@@ -130,11 +104,9 @@ namespace TEditor
                 SwitchToDocControl();
             }
         }
-
+        DocControl docControl;
         private void SwitchToDocControl()
         {
-            var docControl = new DocControl();
-            docControl.DataContext = Model;
             placeLayerControl.Children.Add(docControl);
         }
 
@@ -306,14 +278,12 @@ namespace TEditor
             _layerManager.CancelSelectionAll();
         }
 
-
-
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog dlg = new SaveFileDialog
             {
                 Filter = "PNG 图片|*.png",
-                FileName = CurrentFileName.Substring(0, CurrentFileName.LastIndexOf("."))
+                FileName = Vm.CurrentFileName.Substring(0, Vm.CurrentFileName.LastIndexOf("."))
             };
             if (dlg.ShowDialog() == true)
             {
@@ -381,7 +351,6 @@ namespace TEditor
         private DataTable currentDataTable;
         private void buttonImportTable_Click(object sender, RoutedEventArgs e)
         {
-            
             if (MessageBox.Show("请从Excel中，连同标题行复制后，点击确定", "锵锵锵") != MessageBoxResult.OK)
             {
                 return;
@@ -480,44 +449,6 @@ namespace TEditor
                     Data = currentDataTable,
                     SelectedIndex = dataGridMain.SelectedIndex 
                 }));
-            }
-        }
-
-        private void buttonSave_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "TEditor文件|*.ted";
-            sfd.FileName = CurrentFileName;
-            if (sfd.ShowDialog() == true)
-            {
-                TEditorFile file = new TEditorFile
-                {
-                    DocModel = Model,
-                    Layers = _layerManager.GetLayerModels()
-                };
-
-                string json = JsonSerializer.Serialize(file, GlobalConfig.Instance.JsonOptions);
-                File.WriteAllText(sfd.FileName, json);
-
-                CurrentFileName = sfd.SafeFileName;
-            }
-        }
-
-        private void buttonOpen_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = $"TEditor文件|*.ted|所有文件|*.*";
-            if (dlg.ShowDialog() == true)
-            {
-                string json = File.ReadAllText(dlg.FileName);
-                var file = JsonSerializer.Deserialize<TEditorFile>(json, GlobalConfig.Instance.JsonOptions);
-                //TODO: 错误处理
-                CurrentFileName = dlg.SafeFileName;
-                Model = file.DocModel;
-                _layerManager.SetLayerModels(file.Layers);
-                _layerManager.RefreshClippingMask();
-                FormatConditionGroupsViewModel formats = new(Model.FormatConditionGroups);
-                controlFormatConditionGroups.DataContext = formats;
             }
         }
 
@@ -620,31 +551,6 @@ namespace TEditor
                 return false;
             }
         }
-
-        #region 添加图层
-        private void buttonAddText_Click(object sender, RoutedEventArgs e)
-        {
-            _layerManager.AddWithKey(LayerType.Text);
-        }
-
-        private void buttonAddImage_Click(object sender, RoutedEventArgs e)
-        {
-            _layerManager.AddWithKey(LayerType.Image);
-        }
-
-        private void buttonAddEllipse_Click(object sender, RoutedEventArgs e)
-        {
-            _layerManager.AddWithKey(LayerType.Ellipse);
-            //var vb = new VisualBrush(le);
-            //lr.OpacityMask = vb;
-
-        }
-
-        private void buttonAddRectangle_Click(object sender, RoutedEventArgs e)
-        {
-            _layerManager.AddWithKey(LayerType.Rectangle);
-        }
-        #endregion
 
         private void GlowWindow_ContentRendered(object sender, EventArgs e)
         {
