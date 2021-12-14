@@ -37,6 +37,9 @@
                         <hc:TextBox hc:InfoElement.Title="文字模板"  Text="{Binding VariableTemplate}" 
                                     Height="56" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" TextWrapping="Wrap" />
                     </DockPanel>
+                    <CheckBox FlowDirection="RightToLeft" IsChecked="{Binding TextBoxMode}" HorizontalAlignment="Left">
+                        <TextBlock FlowDirection="LeftToRight" Text="文本框模式" />
+                    </CheckBox>
                     <hc:ComboBox hc:InfoElement.Title="字体" x:Name="comboBoxFont" SelectionChanged="comboBoxFont_SelectionChanged" AutoComplete="True" IsEditable="True" />
                     <hc:ComboBox hc:InfoElement.Title="字重" x:Name="comboBoxFontWeight" SelectedItem="{Binding FontWeight}" />
                     <hc:ComboBox hc:InfoElement.Title="字号" x:Name="comboBoxFontSize" Text="{Binding FontSize}" IsEditable="True" />
@@ -62,7 +65,7 @@
                             <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Right}" Padding="0">
                                 <iconPacks:PackIconBootstrapIcons Kind="TextRight" Width="12" Height="12"/>
                             </ToggleButton>
-                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Justify}" Padding="0">
+                            <ToggleButton IsChecked="{Binding TextAlignment, Converter={StaticResource ResourceKey=EnumConverterKey}, ConverterParameter=Justify}" Padding="0" Visibility="{Binding TextBoxMode, Converter={StaticResource BoolToVis}}">
                                 <iconPacks:PackIconBootstrapIcons Kind="Justify" Width="12" Height="12"/>
                             </ToggleButton>
                         </hc:ButtonGroup>

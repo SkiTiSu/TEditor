@@ -22,6 +22,9 @@ namespace TEditor.Models
         public double LineHeight { get; set; } = 0;
         public uint TextSpaceNumber { get; set; } = 0;
         public Color Color { get; set; } = Colors.Black;
+        public bool TextBoxMode { get; set; } = false;
+        public double Width { get; set; }
+        public double Height { get; set; }
 
         public bool StrokeEnable { get; set; } = false;
         public StrokePosition StrokePosition { get; set; } = StrokePosition.Outside;

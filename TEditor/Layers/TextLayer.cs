@@ -1,11 +1,7 @@
-﻿using Microsoft.SqlServer.Server;
-using PropertyChanged;
+﻿using PropertyChanged;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -33,7 +29,7 @@ namespace TEditor.Layers
             }
         }
 
-        private TextLayerModel model = new TextLayerModel();
+        private TextLayerModel model = new();
 
         FormattedText formattedText;
 
@@ -58,7 +54,12 @@ namespace TEditor.Layers
                 FontSize,
                 new SolidColorBrush(Color),
                 1.0);
-            formattedText.MaxLineCount = 999;
+            if (TextBoxMode)
+            {
+                formattedText.MaxTextWidth = Width;
+                formattedText.MaxTextHeight = Height;
+            }
+            //formattedText.MaxLineCount = 1;
             formattedText.Trimming = TextTrimming.CharacterEllipsis; //注意这里要暴露给用户设置为妙
             formattedText.TextAlignment = TextAlignment;
             formattedText.LineHeight = LineHeight;
@@ -83,20 +84,6 @@ namespace TEditor.Layers
         {
             Model = model;
             ReInit();
-            // Set a maximum width and height. If the text overflows these values, an ellipsis "..." appears.
-            //formattedText.MaxTextWidth = 300;
-            //formattedText.MaxTextHeight = 240;
-
-            // Use a Bold font weight beginning at the 6th character and continuing for 11 characters.
-            //formattedText.SetFontWeight(FontWeights.Bold, 6, 11);
-
-            // Use a linear gradient brush beginning at the 6th character and continuing for 11 characters.
-            //formattedText.SetForegroundBrush(
-            //                        new LinearGradientBrush(
-            //                        Colors.Orange,
-            //                        Colors.Teal,
-            //                        90.0),
-            //                        6, 11);
             this.PropertyChanged += TextLayer_PropertyChanged;
         }
 
@@ -125,7 +112,7 @@ namespace TEditor.Layers
 
         public FontFamily FontFamily
         {
-            get => new FontFamily(model.FontFamilyName);
+            get => new(model.FontFamilyName);
             set
             {
                 model.FontFamilyName = value.ToString();
@@ -163,7 +150,7 @@ namespace TEditor.Layers
             }
         }
         
-        //TODO: 文本框模式
+        // TODO Justify不起作用
         public TextAlignment TextAlignment
         {
             get => model.TextAlignment;
@@ -191,6 +178,17 @@ namespace TEditor.Layers
             {
                 model.TextSpaceNumber = value;
                 ReInit();
+            }
+        }
+
+        public bool TextBoxMode
+        {
+            get => model.TextBoxMode;
+            set
+            {
+                model.Width = Width;
+                model.Height = Height;
+                model.TextBoxMode = value;
             }
         }
 
@@ -275,19 +273,27 @@ namespace TEditor.Layers
 
         public override double Width
         {
-            get => formattedText.Width;
+            get => model.TextBoxMode ? model.Width : formattedText.Width;
             set
             {
-                formattedText.MaxTextWidth = value;
+                if (model.TextBoxMode)
+                {
+                    model.Width = value;
+                    formattedText.MaxTextWidth = value;
+                }
             }
         }
 
         public override double Height
         {
-            get => formattedText.Height;
+            get => model.TextBoxMode ? model.Height : formattedText.Height;
             set
             {
-                formattedText.MaxTextHeight = value;
+                if (model.TextBoxMode)
+                {
+                    model.Height = value;
+                    formattedText.MaxTextHeight = value;
+                }
             }
         }
 
@@ -375,13 +381,11 @@ namespace TEditor.Layers
             }
 
             this.ReArrangeInner();
-            //this.Width = formattedText.Width;
-            //this.Height = formattedText.Height;
         }
 
         protected sealed override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
         {
-            Rect r = new Rect(0, 0, Width, Height);
+            Rect r = new(0, 0, Width, Height);
 
             if (r.Contains(hitTestParameters.HitPoint))
             {
