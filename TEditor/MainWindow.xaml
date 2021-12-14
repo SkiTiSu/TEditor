@@ -113,7 +113,7 @@
                 <ScrollBar x:Name="scrollBarVertical" Grid.Column="1" Orientation="Vertical" Scroll="scrollBarVertical_Scroll" Style="{StaticResource ScrollBarBaseStyle}" LargeChange="10" />
             </Grid>
             <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="Black"/>
-            <DataGrid Grid.Row="2" x:Name="dataGridMain"  AutoGenerateColumns="True" SelectionChanged="dataGridMain_SelectionChanged" MinColumnWidth="80"/>
+            <DataGrid Grid.Row="2" x:Name="dataGridMain"  AutoGenerateColumns="True" SelectionChanged="dataGridMain_SelectionChanged" MinColumnWidth="20" Style="{StaticResource DataGrid.Small}"/>
         </Grid>
         <GridSplitter Grid.Row="1" Grid.Column="2" Width="3" HorizontalAlignment="Stretch" Background="Black"/>
 

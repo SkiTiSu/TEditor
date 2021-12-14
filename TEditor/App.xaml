@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="Colors.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBox.Small}"/>
             <Style TargetType="{x:Type local:ResizeThumb}">
                 <Setter Property="SnapsToDevicePixels"
           Value="true" />
