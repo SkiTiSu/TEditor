@@ -1,7 +1,6 @@
 # TEditor
-![](https://user-images.githubusercontent.com/8959735/137622719-b1b3925a-1baf-4ba2-ad93-2955ab4bddf1.png)  
+![](https://user-images.githubusercontent.com/8959735/146024526-a4ebc5a0-9605-4997-af06-554ee27618b9.png)  
 »¶Ó­À´µ½TEditor£¬¾ßÓĞÍ¼ĞÎ»¯±à¼­Æ÷µÄÄ£°åÍ¼Æ¬ÅúÁ¿Éú³ÉÆ÷¡£  
-±¾Èí¼şÉĞÔÚ³õ²½ÑĞ·¢½×¶Î£¬µ«ÒÑ¿ÉÒÔÊ¹ÓÃ¡£
 # Ö÷Òª¹¦ÄÜ
 - Í¼ĞÎ»¯½çÃæ£¬Ö§³ÖÎÄ×Ö¡¢Í¼Æ¬¡¢»ù´¡Í¼ĞÎ
 - Ö§³Ö´ÓExcel¡¢csvµ¼ÈëÊı¾İ
@@ -20,3 +19,4 @@ TEditor¼´Template/TiSu Editor£¬£¨ÌìÊéµÄ£©Ä£°å±à¼­Æ÷£¬Ò»¿ªÊ¼Ö»Ïë×ö³ÉBRµÄÒ»¸öÄ£¿é£
 »¶Ó­²ÎÓë¿ª·¢£¬ÇëÁªÏµÌìÊé£¡
 # Ë­ÔÚÊ¹ÓÃTEditor
 - [CVSE+](https://space.bilibili.com/151439645)
+- [¹íĞóÖÜ¿¯×é](https://space.bilibili.com/14498772)
