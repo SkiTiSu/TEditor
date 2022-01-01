@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -72,8 +73,15 @@ namespace TEditor.Layers
             {
                 space += "\u200A"; // Hair Space，约为1/8 em
             }
-            char[] textArray = Text.ToCharArray();
-            return string.Join(space, textArray);
+            List<string> output = new();
+            using StringReader sr = new(Text);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                char[] textArray = line.ToCharArray();
+                output.Add(string.Join(space, textArray));
+            }
+            return string.Join(Environment.NewLine, output);
             
         }
 
@@ -286,8 +294,7 @@ namespace TEditor.Layers
 
         public override double Height
         {
-            // TODO 需要补偿首行偏移，但同时需要修改Adorner
-            get => model.TextBoxMode ? model.Height : formattedText.Height;
+            get => model.TextBoxMode ? model.Height : formattedText.Height + FontSize - formattedText.Baseline;
             set
             {
                 if (model.TextBoxMode)
@@ -301,7 +308,8 @@ namespace TEditor.Layers
         protected override void OnRender(DrawingContext drawingContext)
         {
             //drawingContext.DrawText(formattedText, new Point(0, 0));
-            var _textGeometry = formattedText.BuildGeometry(new Point(0, -(formattedText.Baseline - FontSize)));
+            double yOffset = -(formattedText.Baseline - FontSize);
+            var _textGeometry = formattedText.BuildGeometry(new Point(0, yOffset));
  
             drawingContext.DrawGeometry(
                 new SolidColorBrush(Color),
