@@ -10,7 +10,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Title="{Binding Title}" Height="500" Width="900" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         Icon="Resources/Te.ico"
-        ActiveGlowColor="{DynamicResource PrimaryColor}" ContentRendered="GlowWindow_ContentRendered">
+        ActiveGlowColor="{DynamicResource PrimaryColor}" ContentRendered="GlowWindow_ContentRendered" Closing="GlowWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

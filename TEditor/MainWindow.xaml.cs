@@ -556,5 +556,20 @@ namespace TEditor
         {
             ArrangeControl();
         }
+
+        private void GlowWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var result = MessageBox.Show(
+                this,
+                "确认关闭TEditor吗？\r\n请检查是否已保存当前文件！点击取消返回！\r\n\r\n（TEditor还不能检测文件是否有更改）",
+                "关闭确认",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Cancel);
+            if (result == MessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }
