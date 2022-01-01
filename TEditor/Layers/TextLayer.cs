@@ -286,6 +286,7 @@ namespace TEditor.Layers
 
         public override double Height
         {
+            // TODO 需要补偿首行偏移，但同时需要修改Adorner
             get => model.TextBoxMode ? model.Height : formattedText.Height;
             set
             {
@@ -300,7 +301,7 @@ namespace TEditor.Layers
         protected override void OnRender(DrawingContext drawingContext)
         {
             //drawingContext.DrawText(formattedText, new Point(0, 0));
-            var _textGeometry = formattedText.BuildGeometry(new Point(0, 0));
+            var _textGeometry = formattedText.BuildGeometry(new Point(0, -(formattedText.Baseline - FontSize)));
  
             drawingContext.DrawGeometry(
                 new SolidColorBrush(Color),
@@ -367,19 +368,12 @@ namespace TEditor.Layers
                 this.Effect = null;
             }
 
-            switch (TextAlignment)
+            ContentLeftOffset = TextAlignment switch
             {
-                case TextAlignment.Center:
-                    ContentLeftOffset = -Width / 2;
-                    break;
-                case TextAlignment.Right:
-                    ContentLeftOffset = -Width;
-                    break;
-                default:
-                    ContentLeftOffset = 0;
-                    break;
-            }
-
+                TextAlignment.Center => -Width / 2,
+                TextAlignment.Right => -Width,
+                _ => 0,
+            };
             this.ReArrangeInner();
         }
 
