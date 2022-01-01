@@ -10,27 +10,28 @@ using TEditor.Models;
 
 namespace TEditor.Layers
 {
-    public abstract class ShapeLayerBase : LayerInner
+    public abstract class ShapeLayerBase<T> : LayerInner 
+        where T : ShapeLayerBaseModel, new()
     {
         public ShapeLayerBase(Canvas canvasLayout, Layer canvasContent)
-            : this(canvasLayout, canvasContent, new ShapeLayerBaseModel())
+            : this(canvasLayout, canvasContent, new T())
         {
 
         }
 
-        public ShapeLayerBase(Canvas canvasLayout, Layer canvasContent, ShapeLayerBaseModel model)
+        public ShapeLayerBase(Canvas canvasLayout, Layer canvasContent, T model)
             : base(canvasLayout, canvasContent)
         {
             Model = model;
         }
 
-        private ShapeLayerBaseModel model;
+        internal T model;
         public override object Model 
         { 
             get => model;
             set
             {
-                model = value as ShapeLayerBaseModel;
+                model = value as T;
                 Width = model.Width;
                 Height = model.Height;
                 ReInit();

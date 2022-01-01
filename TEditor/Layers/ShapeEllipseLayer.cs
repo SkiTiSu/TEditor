@@ -9,7 +9,7 @@ using TEditor.Models;
 
 namespace TEditor.Layers
 {
-    public class ShapeEllipseLayer : ShapeLayerBase
+    public class ShapeEllipseLayer : ShapeLayerBase<ShapeLayerBaseModel>
     {
         public override string Type { get; } = "椭圆";
         public override string Key { get; } = LayerType.Ellipse;

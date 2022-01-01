@@ -292,7 +292,7 @@ namespace TEditor
                     layer = new ShapeEllipseLayer(canvasLayout, canvasContent, ToObject<ShapeLayerBaseModel>((JsonElement)model.Data));
                     break;
                 case LayerType.Rectangle:
-                    layer = new ShapeRectangleLayer(canvasLayout, canvasContent, ToObject<ShapeLayerBaseModel>((JsonElement)model.Data));
+                    layer = new ShapeRectangleLayer(canvasLayout, canvasContent, ToObject<ShapeRectangleLayerModel>((JsonElement)model.Data));
                     break;
                 default:
                     layer = new LayerInner(canvasLayout, canvasContent);
