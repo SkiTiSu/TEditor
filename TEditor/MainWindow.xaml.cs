@@ -20,6 +20,7 @@ using TEditor.Views;
 using HandyControl.Controls;
 using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
+using PostSharp.Patterns.Recording;
 
 namespace TEditor
 {
@@ -570,6 +571,11 @@ namespace TEditor
             {
                 e.Cancel = true;
             }
+        }
+
+        private void buttonTest_Click(object sender, RoutedEventArgs e)
+        {
+            RecordingServices.DefaultRecorder.Undo();
         }
     }
 }

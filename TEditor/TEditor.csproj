@@ -40,6 +40,7 @@
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
     <PackageReference Include="MimeMapping" Version="1.0.1.37" />
+    <PackageReference Include="PostSharp.Patterns.Xaml" Version="6.10.10" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" PrivateAssets="All" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
     <PackageReference Include="ToolGood.Algorithm" Version="2.2.0.2" />

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using PostSharp.Patterns.Collections;
+using PostSharp.Patterns.Model;
+using PostSharp.Patterns.Recording;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,6 +21,7 @@ using TEditor.Models;
 
 namespace TEditor
 {
+    [Recordable]
     public class LayerManager
     {
         Canvas _canvasLayout;
@@ -28,7 +32,8 @@ namespace TEditor
         public int ZIndexToIndex(int zIndex)
             => LayersIndexMax - zIndex;
 
-        public ObservableCollection<Layer> Layers { get; } = new ObservableCollection<Layer>();
+        [Child]
+        public AdvisableCollection<Layer> Layers { get; } = new();
 
         public event EventHandler<LayerInner> OnSelectionChanged;
         public event EventHandler<Layer> LayerVisableChanged;
@@ -168,7 +173,9 @@ namespace TEditor
             DraggingLayerInner = sender as LayerInner;
         }
 
+        [NotRecorded]
         Point lastPosition;
+        [NotRecorded]
         bool isDragging = false;
         LayerInner DraggingLayerInner;
 

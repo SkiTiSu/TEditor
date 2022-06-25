@@ -1,5 +1,8 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using PostSharp.Patterns.Collections;
+using PostSharp.Patterns.Model;
+using PostSharp.Patterns.Recording;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,19 +15,21 @@ using TEditor.Models;
 
 namespace TEditor.ViewModels
 {
+    //[Recordable]
     public partial class UserControlLayersViewModel : ObservableObject
     {
         [ObservableProperty]
         [AlsoNotifyChangeFor(nameof(Layers))]
+        [Reference]
         private LayerManager layerManager;
-
-        public ObservableCollection<Layer> Layers
+        
+        public AdvisableCollection<Layer> Layers
             => LayerManager?.Layers;
 
         private Layer SelectedLayer => LayerManager.SelectedLayer;
 
         [ICommand]
-        private void MenuDelete() => 
+        private void MenuDelete() =>
             LayerManager.Remove(SelectedLayer);
 
         [ICommand]

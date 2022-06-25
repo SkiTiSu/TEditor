@@ -17,7 +17,7 @@ namespace TEditor
     public partial class UserControlLayers : UserControl
     {
         public UserControlLayersViewModel VM { get; } = new();
-        public ObservableCollection<Layer> Layers => VM.Layers;
+        public IList<Layer> Layers => VM.Layers;
 
         public UserControlLayers()
         {

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:model="clr-namespace:PostSharp.Patterns.Model.Controls;assembly=PostSharp.Patterns.Xaml"
         xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views" xmlns:viewmodels="clr-namespace:TEditor.ViewModels" 
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
@@ -55,6 +56,9 @@
                             <TextBlock Text="导出当前"/>
                         </StackPanel>
                     </Button>
+                    <model:UndoButton />
+                    <model:RedoButton />
+                    <Button x:Name="buttonTest" Content="Test" Click="buttonTest_Click"/>
                 </ToolBar>
             </ToolBarTray>
         </Grid>

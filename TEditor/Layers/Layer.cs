@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostSharp.Patterns.Recording;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,6 +13,7 @@ using TEditor.Models;
 
 namespace TEditor.Layers
 {
+    [Recordable]
     public class Layer : Canvas, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
