@@ -6,11 +6,19 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:TEditor" xmlns:views="clr-namespace:TEditor.Views" xmlns:viewmodels="clr-namespace:TEditor.ViewModels" 
+        xmlns:teditor="clr-namespace:TEditor"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Title="{Binding Title}" Height="500" Width="900" Loaded="Window_Loaded" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         Icon="Resources/Te.ico"
         ActiveGlowColor="{DynamicResource PrimaryColor}" ContentRendered="GlowWindow_ContentRendered" Closing="GlowWindow_Closing">
+    <hc:GlowWindow.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="Z" Command="{Binding UndoCommand}" />
+        <KeyBinding Modifiers="Ctrl+Shift" Key="Z" Command="{Binding RedoCommand}" />
+    </hc:GlowWindow.InputBindings>
+    <hc:GlowWindow.Resources>
+        <teditor:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </hc:GlowWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -53,6 +61,40 @@
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconBootstrapIcons Kind="FileEarmarkArrowDownFill" Width="16" Height="16" Margin="0 0 4 0"/>
                             <TextBlock Text="导出当前"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button x:Name="buttonUndo" Command="{Binding UndoCommand}" ToolTip="Ctrl+Z">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="ArrowCounterclockwise" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="撤销"/>
+                        </StackPanel>
+                    </Button>
+                    <ToggleButton 
+                        IsEnabled="{Binding ElementName=buttonUndo, Path=IsEnabled}"
+                        x:Name="buttonUndoList" 
+                        IsHitTestVisible="{Binding ElementName=popupUndoList, Path=IsOpen, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" 
+                        Padding="3">
+                        <iconPacks:PackIconBootstrapIcons Kind="CaretDownFill" Width="6" />
+                    </ToggleButton>
+                    <Popup 
+                        x:Name="popupUndoList" 
+                        IsOpen="{Binding IsChecked, ElementName=buttonUndoList}"
+                        PlacementTarget="{Binding ElementName=buttonUndo}"
+                        Width="300" 
+                        Height="260" 
+                        StaysOpen="False">
+                        <Grid>
+                            <ListBox ItemsSource="{Binding UndoList}">
+
+                            </ListBox>
+                            <TextBlock VerticalAlignment="Bottom">这个历史记录现在只能看看，点击没卵用</TextBlock>
+                        </Grid>
+                    </Popup>
+                    <Button Command="{Binding RedoCommand}" ToolTip="Ctrl+Shift+Z">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconBootstrapIcons Kind="ArrowClockwise" Width="16" Height="16" Margin="0 0 4 0"/>
+                            <TextBlock Text="重做"/>
                         </StackPanel>
                     </Button>
                 </ToolBar>

@@ -267,7 +267,7 @@ namespace TEditor.Layers
             get => model.VariableEnable;
             set => model.VariableEnable = value;
         }
-        public bool VariableEnableInverse { get => !VariableEnable; }
+
         public string VariableTemplate
         {
             get => model.VariableTemplate;

@@ -1,6 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -20,6 +20,7 @@ using TEditor.Views;
 using HandyControl.Controls;
 using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
+using TEditor.Utils.Undo;
 
 namespace TEditor
 {
@@ -29,6 +30,7 @@ namespace TEditor
     public partial class MainWindow : GlowWindow
     {
         private LayerManager _layerManager;
+        private UndoManager undoManager;
 
         private MainViewModel Vm { get; set; }
 
@@ -41,7 +43,9 @@ namespace TEditor
         {
             GlobalCache.Init();
 
-            _layerManager = new LayerManager(canvasLayout, canvasContent);
+            undoManager = new();
+
+            _layerManager = new LayerManager(canvasLayout, canvasContent, undoManager);
             listBoxLayers.VM.LayerManager = _layerManager;
             _layerManager.OnSelectionChanged += _layerManager_OnSelectionChanged;
             _layerManager.LayerVisableChanged += _layerManager_LayerVisableChanged;
@@ -58,9 +62,12 @@ namespace TEditor
                 _layerManager.Layers.First(x => x.Id == m.Value.LayerId).Visible = m.Value.Visible;
             });
 
-            Vm = new(_layerManager);
-            Vm.Model = new();
-            Vm.CurrentFileName = "未命名-1.ted";
+
+            Vm = new(_layerManager, undoManager)
+            {
+                CurrentFileName = "未命名-1.ted",
+                Model = new()
+            };
             this.DataContext = Vm;
 
             docControl = new()
@@ -225,7 +232,7 @@ namespace TEditor
             {
                 isAltDown = false;
                 e.Handled = true;
-            } 
+            }
             //else if (key == Key.Delete && !(e.OriginalSource is TextBox))
             //{
             //    if (_layerManager.SelectedLayerInner != null)
@@ -443,12 +450,14 @@ namespace TEditor
         {
             if (dataGridMain.SelectedIndex < currentDataTable.Rows.Count && dataGridMain.SelectedIndex >= 0)
             {
+                undoManager.CanAddChange = false;
                 UpdateVar(dataGridMain.SelectedIndex);
                 WeakReferenceMessenger.Default.Send(new DataSelectedRowChangedMessage(new DataSelectedRowChangedMessageArgs() 
                 { 
                     Data = currentDataTable,
                     SelectedIndex = dataGridMain.SelectedIndex 
                 }));
+                undoManager.CanAddChange = true;
             }
         }
 
@@ -559,9 +568,13 @@ namespace TEditor
 
         private void GlowWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (!Vm.IsEdited)
+            {
+                return;
+            }
             var result = MessageBox.Show(
                 this,
-                "确认关闭TEditor吗？\r\n请检查是否已保存当前文件！点击取消返回！\r\n\r\n（TEditor还不能检测文件是否有更改）",
+                "有未保存的更改！\r\n确认关闭TEditor吗？点击取消返回。",
                 "关闭确认",
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Warning,

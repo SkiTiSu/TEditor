@@ -15,6 +15,7 @@ using System.Windows.Media;
 using TEditor.Converters;
 using TEditor.Layers;
 using TEditor.Models;
+using TEditor.Utils.Undo;
 
 namespace TEditor
 {
@@ -23,6 +24,8 @@ namespace TEditor
         Canvas _canvasLayout;
         Canvas _canvasContent;
         AdornerLayer _adornerLayer;
+
+        UndoManager undoManager;
 
         public const int LayersIndexMax = 999;
         public int ZIndexToIndex(int zIndex)
@@ -48,7 +51,7 @@ namespace TEditor
         }
         public Layer SelectedLayer => SelectedLayerInner.ParentCanvas;
 
-        public LayerManager(Canvas canvasLayout, Canvas canvasContent)
+        public LayerManager(Canvas canvasLayout, Canvas canvasContent, UndoManager undoManager)
         {
             _canvasLayout = canvasLayout;
             _canvasContent = canvasContent;
@@ -59,6 +62,8 @@ namespace TEditor
             _canvasLayout.MouseLeftButtonUp += _canvasLayout_MouseLeftButtonUp;
 
             Layers.CollectionChanged += Layers_CollectionChanged;
+
+            this.undoManager = undoManager;
         }
 
         private void Layers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -110,7 +115,23 @@ namespace TEditor
             _canvasContent.Children.Add(layer);
 
             Layers.Insert(0, layer);
+
+            layerInner.PropertyChangeDetail += LayerInner_PropertyChangeDetail;
         }
+
+        private void LayerInner_PropertyChangeDetail(object sender, string propertyName, object before, object after)
+        {
+            if (sender is IUndoHasIgnore senderIgnore)
+            {
+                // TODO 不应该在这里屏蔽
+                if (senderIgnore.UndoIgnore.Contains(propertyName))
+                {
+                    return;
+                };
+            }
+            undoManager.AddChange(new PropertyChange(sender, propertyName, before, after));
+        }
+
 
         public Layer AddWithKey(string key)
         {

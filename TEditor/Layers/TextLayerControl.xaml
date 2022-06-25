@@ -11,6 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="300" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <local:InverseBooleanConverter x:Key="InverseBool" />
         <Style TargetType="StackPanel">
             <Setter Property="Margin" Value="4" />
         </Style>
@@ -28,7 +29,7 @@
         <TabControl>
             <TabItem Header="基本">
                 <StackPanel Orientation="Vertical" hc:InfoElement.TitlePlacement="Left">
-                    <hc:TextBox hc:InfoElement.Title="文字" x:Name="textBoxInput" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding VariableEnableInverse}" 
+                    <hc:TextBox hc:InfoElement.Title="文字" x:Name="textBoxInput" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding VariableEnable, Converter={StaticResource InverseBool}}" 
                                 VerticalAlignment="Stretch" Height="56" Margin="0,0,0,0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" VerticalContentAlignment="Top" />
                     <CheckBox FlowDirection="RightToLeft" IsChecked="{Binding VariableEnable}" HorizontalAlignment="Left">
                         <TextBlock FlowDirection="LeftToRight" Text="变量" />

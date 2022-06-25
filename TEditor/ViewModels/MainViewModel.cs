@@ -1,5 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TEditor.Layers;
+using TEditor.Utils.Undo;
 
 namespace TEditor.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
         private readonly LayerManager layerManager;
+        private readonly UndoManager undoManager;
 
         public DocViewModel DocVm { get; private set; }
 
@@ -25,10 +27,24 @@ namespace TEditor.ViewModels
             get => model;
             set
             {
+                // 这里相当于状态回归到没有对新文件/打开的文件做任何更改
                 model = value;
                 layerManager.SetLayerModels(Model.Layers);
                 DocVm.Model = model.DocModel;
                 //OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+                IsEdited = false;
+                RefreshTitle();
+            }
+        }
+
+        private bool isEdited;
+        public bool IsEdited 
+        {
+            get => isEdited;
+            set
+            {
+                isEdited = value;
+                RefreshTitle();
             }
         }
 
@@ -36,26 +52,25 @@ namespace TEditor.ViewModels
         {
             DocVm = new();
         }
-        public MainViewModel(LayerManager layerManager) : this()
+        public MainViewModel(LayerManager layerManager, UndoManager undoManager) : this()
         {
             this.layerManager = layerManager;
+            this.undoManager = undoManager;
+            undoManager.StatusChanged += UndoManager_StatusChanged;
         }
 
         [ObservableProperty]
         private string title;
 
-        private string currentFileName;
-        public string CurrentFileName
+        public string CurrentFileName { get; set; }
+
+        private void RefreshTitle()
         {
-            get => currentFileName;
-            set
-            {
-                currentFileName = value;
-                Title = currentFileName + " - TEditor by 四季天书 " + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-            }
+            string editedSign = IsEdited ? "*" : "";
+            Title = CurrentFileName + editedSign + " - TEditor by 四季天书 " + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
         }
 
-        [ICommand]
+        [RelayCommand]
         public void Save()
         {
             SaveFileDialog sfd = new()
@@ -73,10 +88,11 @@ namespace TEditor.ViewModels
                 File.WriteAllText(sfd.FileName, json);
 
                 CurrentFileName = sfd.SafeFileName;
+                IsEdited = false;
             }
         }
 
-        [ICommand]
+        [RelayCommand]
         public void Open()
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -93,25 +109,25 @@ namespace TEditor.ViewModels
             }
         }
 
-        [ICommand]
+        [RelayCommand]
         public void AddText()
         {
             layerManager.AddWithKey(LayerType.Text);
         }
 
-        [ICommand]
+        [RelayCommand]
         public void AddImage()
         {
             layerManager.AddWithKey(LayerType.Image);
         }
 
-        [ICommand]
+        [RelayCommand]
         public void AddEllipse()
         {
             layerManager.AddWithKey(LayerType.Ellipse);
         }
 
-        [ICommand]
+        [RelayCommand]
         public void AddRectangle()
         {
             layerManager.AddWithKey(LayerType.Rectangle);
@@ -125,5 +141,36 @@ namespace TEditor.ViewModels
                 Layers = layerManager.GetLayerModels(),
             };
         }
+
+        [RelayCommand(CanExecute = nameof(CanUndo))]
+        public void Undo()
+        {
+            undoManager.Undo();
+        }
+
+        public bool CanUndo()
+            => undoManager.CanUndo();
+
+        [RelayCommand(CanExecute = nameof(CanRedo))]
+        public void Redo()
+        {
+            undoManager.Redo();
+        }
+
+        public bool CanRedo()
+            => undoManager.CanRedo();
+
+        private void UndoManager_StatusChanged(object sender, EventArgs e)
+        {
+            if (!IsEdited) { IsEdited = true; }
+            UndoCommand.NotifyCanExecuteChanged();
+            RedoCommand.NotifyCanExecuteChanged();
+            UndoList = null;
+            OnPropertyChanged(nameof(UndoList));
+            UndoList = undoManager.UndoList;
+            OnPropertyChanged(nameof(UndoList));
+        }
+
+        public IReadOnlyCollection<IChange> UndoList { get; set; }
     }
 }

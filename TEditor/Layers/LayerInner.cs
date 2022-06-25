@@ -16,14 +16,18 @@ using System.Text.Encodings.Web;
 using TEditor.Converters;
 using PropertyChanged;
 using TEditor.Layers;
+using TEditor.Utils.Undo;
 
 namespace TEditor
 {
     [Serializable]
-    public class LayerInner : Canvas, INotifyPropertyChanged
+    public class LayerInner : Canvas, INotifyPropertyChanged, IUndoHasIgnore
     {
         public double GridSubdivisions = 0.5;
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public delegate void PropertyChangeDetailEventHandler(object sender, string propertyName, object before, object after);
+        public event PropertyChangeDetailEventHandler PropertyChangeDetail;
 
         public string LayerNameDisplay => string.IsNullOrWhiteSpace(LayerNameCustom) ? LayerName : LayerNameCustom;
         [AlsoNotifyFor(nameof(LayerNameDisplay))]
@@ -120,6 +124,7 @@ namespace TEditor
         }
 
         // Binding无法识别隐藏基类的new属性
+        [AlsoNotifyFor(nameof(Size))]
         public double WidthBinding
         {
             get => Width;
@@ -136,12 +141,24 @@ namespace TEditor
             set => base.Height = value;
         }
 
+        [AlsoNotifyFor(nameof(Size))]
         public double HeightBinding
         {
             get => Height;
             set
             {
                 Height = value;
+                ReArrangeInner();
+            }
+        }
+
+        public Size Size
+        {
+            get => new(Width, Height);
+            set
+            {
+                Width = value.Width;
+                Height = value.Height;
                 ReArrangeInner();
             }
         }
@@ -174,6 +191,7 @@ namespace TEditor
             }
         }
 
+        [DoNotNotify]
         public double LayoutLeft
         {
             get => ContentDisLeft + ContentLeft * ContentScale;
@@ -182,6 +200,8 @@ namespace TEditor
                 ContentLeft = (value - ContentDisLeft) / ContentScale;
             }
         }
+
+        [DoNotNotify]
         public double LayoutTop
         {
             get => ContentDisTop + ContentTop * ContentScale;
@@ -191,7 +211,9 @@ namespace TEditor
             }
         }
 
+        [DoNotNotify]
         public double ContentLeftOffset { get; set; } = 0;
+        [DoNotNotify]
         public double ContentTopOffset { get; set; } = 0;
 
         public Point ContentPosition
@@ -372,5 +394,28 @@ namespace TEditor
                 return Math.Floor(passednumber / roundto) * roundto;
             }
         }
+
+        // 此方法由Fody自动调用
+        public void OnPropertyChanged(string propertyName, object before, object after)
+        {
+            PropertyChangeDetail?.Invoke(this, propertyName, before, after);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public IEnumerable<string> UndoIgnore => new[]
+        {
+            nameof(ContentLeft),
+            nameof(ContentTop),
+            nameof(IsResizing),
+            nameof(LayerName),
+            nameof(LayerNameDisplay),
+            nameof(LayoutHeight),
+            nameof(LayoutWidth),
+            nameof(HeightBinding),
+            nameof(WidthBinding),
+            nameof(Height),
+            nameof(Width),
+
+        };
     }
 }
