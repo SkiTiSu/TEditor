@@ -1,5 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +15,7 @@ namespace TEditor.ViewModels
     public partial class UserControlLayersViewModel : ObservableObject
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(Layers))]
+        [NotifyPropertyChangedFor(nameof(Layers))]
         private LayerManager layerManager;
 
         public ObservableCollection<Layer> Layers
@@ -23,19 +23,19 @@ namespace TEditor.ViewModels
 
         private Layer SelectedLayer => LayerManager.SelectedLayer;
 
-        [ICommand]
+        [RelayCommand]
         private void MenuDelete() => 
             LayerManager.Remove(SelectedLayer);
 
-        [ICommand]
+        [RelayCommand]
         private void MenuEnableClippingMask() =>
             LayerManager.EnableClippingMask(SelectedLayer);
 
-        [ICommand]
+        [RelayCommand]
         private void MenuDisableClippingMask() =>
             LayerManager.DisableClippingMask(SelectedLayer);
 
-        [ICommand]
+        [RelayCommand]
         private void DuplicateLayer()
         {
             if (LayerManager.SelectedLayerInner != null)
@@ -51,7 +51,7 @@ namespace TEditor.ViewModels
             }
         }
 
-        [ICommand]
+        [RelayCommand]
         private void DeleteLayer()
         {
             if (SelectedLayer != null)

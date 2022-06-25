@@ -1,6 +1,6 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,7 +41,7 @@ namespace TEditor.ViewModels
 
         public ObservableCollection<ConditionGroupItemViewModel> Vms { get; set; }
 
-        [ICommand]
+        [RelayCommand]
         private void AddGroup()
         {
             FormatConditionGroupModel model = new()

@@ -1,6 +1,6 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using TEditor.Messages;
 using TEditor.Models;
@@ -50,7 +49,7 @@ namespace TEditor.ViewModels
         [ObservableProperty]
         private bool isEditLayersMode;
 
-        [ICommand]
+        [RelayCommand]
         public void DoubleClicked()
         {
             if (SelectedCondition != null)
@@ -73,7 +72,7 @@ namespace TEditor.ViewModels
             }
         }
 
-        [ICommand]
+        [RelayCommand]
         private void AddCondition()
         {
             var fcModel = new FormatConditionModel();
@@ -82,7 +81,7 @@ namespace TEditor.ViewModels
             Conditions.Add(fcModel);
         }
 
-        [ICommand]
+        [RelayCommand]
         private void RemoveCondition()
         {
             if (Conditions.Count > 1)
@@ -91,7 +90,7 @@ namespace TEditor.ViewModels
             }
         }
 
-        [ICommand]
+        [RelayCommand]
         private void RemoveThisGroup()
         {
             RemoveThis?.Invoke(this, EventArgs.Empty);
