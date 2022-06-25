@@ -24,7 +24,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
@@ -41,13 +41,14 @@ jobs:
         name: net472
         path: TEditor\bin\Release\net472
         
-    - name: Upload net5.0 build artifacts
+    - name: Upload net6.0 build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: net5
-        path: TEditor\bin\Release\net5.0-windows
+        name: net6
+        path: TEditor\bin\Release\net6.0-windows
         
     - name: Prepare release
+      if: startsWith(github.ref, 'refs/tags/')
       run: |
         mv TEditor\bin\Release\net472\TEditor.exe TEditor-net472-${{ github.ref_name }}.exe
     
