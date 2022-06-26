@@ -88,7 +88,7 @@ namespace TEditor.Layers
         public new double ActualWidth { get => formattedText?.Width ?? 0; }
         public new double ActualHeight { get => formattedText?.Height ?? 0; }
         public TextLayer(Canvas canvasLayout, Layer canvasContent, object model)
-            : base(canvasLayout, canvasContent)
+            : base(canvasContent)
         {
             Model = model;
             ReInit();
@@ -361,7 +361,7 @@ namespace TEditor.Layers
             // TODO 阴影如果导出的时候背景是透明则无法显示 bug
             if (ShadowEnable)
             {
-                DropShadowEffect dropShadowEffect = new DropShadowEffect()
+                DropShadowEffect dropShadowEffect = new()
                 {
                     ShadowDepth = ShadowDepth,
                     Direction = ShadowDirection,

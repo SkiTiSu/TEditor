@@ -14,10 +14,9 @@ namespace TEditor
         Canvas _canvasContent;
         AdornerLayer _adornerLayer;
         //List<Canvas> _substitute = new List<Canvas>();
-        Dictionary<FrameworkElement, Canvas> _substitute = new Dictionary<FrameworkElement, Canvas>();
+        Dictionary<FrameworkElement, Canvas> _substitute = new();
 
         public delegate void NewPropHandler(FrameworkElement element, CanProp prop);
-        public event NewPropHandler OnNewProp;
 
         public AdornerManager(Canvas canvasLayout, Canvas canvasContent)
         {
@@ -28,8 +27,8 @@ namespace TEditor
 
         public void Attach(FrameworkElement layer)
         {
-            Canvas substitute = new Canvas();
-            ResizeAdorner ra = new ResizeAdorner(substitute);
+            Canvas substitute = new();
+            ResizeAdorner ra = new(substitute);
             ra.OnChanged += Ra_OnChanged;
 
             _canvasLayout.Children.Add(substitute);

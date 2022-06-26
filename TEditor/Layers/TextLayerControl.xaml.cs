@@ -48,7 +48,7 @@ namespace TEditor
                 return;
             }
             textLayer.FontFamily = currentFont;
-            List<FontWeight> list = new List<FontWeight>();
+            List<FontWeight> list = new();
             foreach (var typeface in currentFont.FamilyTypefaces)
             {
                 if (typeface.Style == FontStyles.Normal)

@@ -56,7 +56,6 @@ namespace TEditor
             }
         }
 
-        Canvas _canvasLayout;
         public Layer ParentCanvas;
         public Substitute _substitute;
         public ResizeAdorner resizeAdorner;
@@ -67,15 +66,16 @@ namespace TEditor
 
         public event MouseButtonEventHandler SubstituteMouseLeftButtonDown;
 
-        public LayerInner(Canvas canvasLayout, Layer canvasContent)
+        public LayerInner(Layer canvasContent)
             : base()
         {
-            _canvasLayout = canvasLayout;
             ParentCanvas = canvasContent;
 
-            _substitute = new Substitute();
-            _substitute.Visibility = Visibility.Collapsed;
-            _substitute.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            _substitute = new Substitute
+            {
+                Visibility = Visibility.Collapsed,
+                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0))
+            };
             _substitute.MouseLeftButtonDown += Substitute_MouseLeftButtonDown;
 
             if (LayerControl is not DefaultLayerControl)
@@ -87,11 +87,6 @@ namespace TEditor
         private void Substitute_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SubstituteMouseLeftButtonDown(this, e);
-        }
-
-        private void Ra_OnChanged(UIElement element, CanProp prop)
-        {
-            ApplyCanProp(prop);
         }
 
         public void ApplyCanProp(CanProp prop)
@@ -174,7 +169,7 @@ namespace TEditor
 
         public Point LayoutPosition
         {
-            get => new Point(LayoutLeft, LayoutTop);
+            get => new(LayoutLeft, LayoutTop);
             set
             {
                 LayoutLeft = value.X;
@@ -209,7 +204,7 @@ namespace TEditor
 
         public Point ContentPosition
         {
-            get => new Point(ContentLeft, ContentTop);
+            get => new(ContentLeft, ContentTop);
             set
             {
                 ContentLeft = value.X;
@@ -292,25 +287,14 @@ namespace TEditor
 
         public static LayerInner FromLayerModel(LayerModel model, Canvas canvasLayout, Layer canvasContent)
         {
-            LayerInner layer;
-            switch (model.Key)
+            LayerInner layer = model.Key switch
             {
-                case LayerType.Text:
-                    layer = new TextLayer(canvasLayout, canvasContent, ToObject<TextLayerModel>((JsonElement)model.Data));
-                    break;
-                case LayerType.Image:
-                    layer = new ImageLayer(canvasLayout, canvasContent, ToObject<ImageLayerModel>((JsonElement)model.Data));
-                    break;
-                case LayerType.Ellipse:
-                    layer = new ShapeEllipseLayer(canvasLayout, canvasContent, ToObject<ShapeLayerBaseModel>((JsonElement)model.Data));
-                    break;
-                case LayerType.Rectangle:
-                    layer = new ShapeRectangleLayer(canvasLayout, canvasContent, ToObject<ShapeRectangleLayerModel>((JsonElement)model.Data));
-                    break;
-                default:
-                    layer = new LayerInner(canvasLayout, canvasContent);
-                    break;
-            }
+                LayerType.Text => new TextLayer(canvasLayout, canvasContent, ToObject<TextLayerModel>((JsonElement)model.Data)),
+                LayerType.Image => new ImageLayer(canvasLayout, canvasContent, ToObject<ImageLayerModel>((JsonElement)model.Data)),
+                LayerType.Ellipse => new ShapeEllipseLayer(canvasLayout, canvasContent, ToObject<ShapeLayerBaseModel>((JsonElement)model.Data)),
+                LayerType.Rectangle => new ShapeRectangleLayer(canvasLayout, canvasContent, ToObject<ShapeRectangleLayerModel>((JsonElement)model.Data)),
+                _ => new LayerInner(canvasContent),
+            };
             //layer.Model = model.Data;
             layer.LayerNameCustom = model.LayerNameCustom;
             layer.ContentLeft = model.Left;
@@ -320,19 +304,14 @@ namespace TEditor
 
         public static LayerInner FromKey(string key, Canvas canvasLayout, Layer canvasContent)
         {
-            switch (key)
+            return key switch
             {
-                case LayerType.Text:
-                    return new TextLayer(canvasLayout, canvasContent);
-                case LayerType.Image:
-                    return new ImageLayer(canvasLayout, canvasContent);
-                case LayerType.Ellipse:
-                    return new ShapeEllipseLayer(canvasLayout, canvasContent);
-                case LayerType.Rectangle:
-                    return new ShapeRectangleLayer(canvasLayout, canvasContent);
-                default:
-                    return new LayerInner(canvasLayout, canvasContent);
-            }
+                LayerType.Text => new TextLayer(canvasLayout, canvasContent),
+                LayerType.Image => new ImageLayer(canvasLayout, canvasContent),
+                LayerType.Ellipse => new ShapeEllipseLayer(canvasLayout, canvasContent),
+                LayerType.Rectangle => new ShapeRectangleLayer(canvasLayout, canvasContent),
+                _ => new LayerInner(canvasContent),
+            };
         }
 
         public static T ToObject<T>(JsonElement element)

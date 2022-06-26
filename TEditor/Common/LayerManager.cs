@@ -391,7 +391,7 @@ namespace TEditor
 
         public LayerModel[] GetLayerModels()
         {
-            List<LayerModel> layerModels = new List<LayerModel>();
+            List<LayerModel> layerModels = new();
             foreach (var layer in Layers)
             {
                 layerModels.Add(layer.ToLayerModel());

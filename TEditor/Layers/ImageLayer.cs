@@ -43,7 +43,7 @@ namespace TEditor.Layers
         }
 
         public ImageLayer(Canvas canvasLayout, Layer canvasContent, object model)
-            : base(canvasLayout, canvasContent)
+            : base(canvasContent)
         {
             Model = model;
         }
@@ -119,7 +119,7 @@ namespace TEditor.Layers
 
         public void ChooseAction()
         {
-            OpenFileDialog dlg = new OpenFileDialog();
+            OpenFileDialog dlg = new();
             var imageExtensions = string.Join(";", ImageCodecInfo.GetImageDecoders().Select(ici => ici.FilenameExtension));
             dlg.Filter = $"图片文件|{imageExtensions}|所有文件|*.*";
             if (dlg.ShowDialog() == true)

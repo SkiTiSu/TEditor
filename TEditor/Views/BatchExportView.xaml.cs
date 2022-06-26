@@ -32,7 +32,7 @@ namespace TEditor.Views
 
         private void buttonSelectExportFolder_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog()
+            SaveFileDialog dlg = new()
             {
                 FileName = "保存在此处",
                 Filter = "文件夹|文件夹"

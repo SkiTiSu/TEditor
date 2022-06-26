@@ -20,7 +20,7 @@ namespace TEditor.Layers
         }
 
         public ShapeLayerBase(Canvas canvasLayout, Layer canvasContent, T model)
-            : base(canvasLayout, canvasContent)
+            : base(canvasContent)
         {
             Model = model;
         }

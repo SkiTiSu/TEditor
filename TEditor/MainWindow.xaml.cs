@@ -287,7 +287,7 @@ namespace TEditor
 
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog
+            SaveFileDialog dlg = new()
             {
                 Filter = "PNG 图片|*.png",
                 FileName = Vm.CurrentFileName.Substring(0, Vm.CurrentFileName.LastIndexOf("."))
@@ -426,7 +426,7 @@ namespace TEditor
             {
                 if (layer.Inner is ILayerWithVar layerVar)
                 {
-                    Dictionary<string, string> ret = new Dictionary<string, string>();
+                    Dictionary<string, string> ret = new();
                     foreach (DataColumn column in currentDataTable.Columns)
                     {
                         ret.Add(column.ColumnName, currentDataTable.Rows[index][column.ColumnName].ToString());

@@ -13,7 +13,7 @@ namespace TEditor.Models
         public FormatConditionGroupModel()
         {
             FormatConditionModels.Add(new FormatConditionModel() { Name = FormatConditionModel.DEFAULT_NAME });
-            Random r = new Random();
+            Random r = new();
             Color = Color.FromRgb((byte)r.Next(1, 255), (byte)r.Next(1, 255), (byte)r.Next(1, 255));
         }
 

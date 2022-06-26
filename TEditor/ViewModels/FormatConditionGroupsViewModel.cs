@@ -59,7 +59,7 @@ namespace TEditor.ViewModels
             var data = message.Value.Data;
             var index = message.Value.SelectedIndex;
 
-            AlgorithmEngine engine = new AlgorithmEngine();
+            AlgorithmEngine engine = new();
             foreach (DataColumn column in data.Columns)
             {
                 string value = data.Rows[index][column.ColumnName].ToString();

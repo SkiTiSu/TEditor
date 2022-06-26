@@ -60,51 +60,35 @@ namespace TEditor
 
         public Cursor GetCursor()
         {
-            switch (Placement)
+            return Placement switch
             {
-                case PlacementAlignmentEnum.TopLeft:
-                case PlacementAlignmentEnum.BottomRight:
-                    return Cursors.SizeNWSE;
-                    break;
-                case PlacementAlignmentEnum.TopRight:
-                case PlacementAlignmentEnum.BottomLeft:
-                    return Cursors.SizeNESW;
-                    break;
-                case PlacementAlignmentEnum.Top:
-                case PlacementAlignmentEnum.Bottom:
-                    return Cursors.SizeNS;
-                    break;
-                case PlacementAlignmentEnum.Left:
-                case PlacementAlignmentEnum.Right:
-                    return Cursors.SizeWE;
-                    break;
-                case PlacementAlignmentEnum.Center:
-                    return Cursors.Cross;
-                    break;
-                default:
-                    return Cursors.Arrow;
-                    break;
-            }
+                PlacementAlignmentEnum.TopLeft or PlacementAlignmentEnum.BottomRight => Cursors.SizeNWSE,
+                PlacementAlignmentEnum.TopRight or PlacementAlignmentEnum.BottomLeft => Cursors.SizeNESW,
+                PlacementAlignmentEnum.Top or PlacementAlignmentEnum.Bottom => Cursors.SizeNS,
+                PlacementAlignmentEnum.Left or PlacementAlignmentEnum.Right => Cursors.SizeWE,
+                PlacementAlignmentEnum.Center => Cursors.Cross,
+                _ => Cursors.Arrow,
+            };
         }
 
         /// <summary>Top left</summary>
-        public static readonly PlacementAlignment TopLeft = new PlacementAlignment(PlacementAlignmentEnum.TopLeft);
+        public static readonly PlacementAlignment TopLeft = new(PlacementAlignmentEnum.TopLeft);
         /// <summary>Top center</summary>
-        public static readonly PlacementAlignment Top = new PlacementAlignment(PlacementAlignmentEnum.Top);
+        public static readonly PlacementAlignment Top = new(PlacementAlignmentEnum.Top);
         /// <summary>Top right</summary>
-        public static readonly PlacementAlignment TopRight = new PlacementAlignment(PlacementAlignmentEnum.TopRight);
+        public static readonly PlacementAlignment TopRight = new(PlacementAlignmentEnum.TopRight);
         /// <summary>Center left</summary>
-        public static readonly PlacementAlignment Left = new PlacementAlignment(PlacementAlignmentEnum.Left);
+        public static readonly PlacementAlignment Left = new(PlacementAlignmentEnum.Left);
         /// <summary>Center center</summary>
-        public static readonly PlacementAlignment Center = new PlacementAlignment(PlacementAlignmentEnum.Center);
+        public static readonly PlacementAlignment Center = new(PlacementAlignmentEnum.Center);
         /// <summary>Center right</summary>
-        public static readonly PlacementAlignment Right = new PlacementAlignment(PlacementAlignmentEnum.Right);
+        public static readonly PlacementAlignment Right = new(PlacementAlignmentEnum.Right);
         /// <summary>Bottom left</summary>
-        public static readonly PlacementAlignment BottomLeft = new PlacementAlignment(PlacementAlignmentEnum.BottomLeft);
+        public static readonly PlacementAlignment BottomLeft = new(PlacementAlignmentEnum.BottomLeft);
         /// <summary>Bottom center</summary>
-        public static readonly PlacementAlignment Bottom = new PlacementAlignment(PlacementAlignmentEnum.Bottom);
+        public static readonly PlacementAlignment Bottom = new(PlacementAlignmentEnum.Bottom);
         /// <summary>Bottom right</summary>
-        public static readonly PlacementAlignment BottomRight = new PlacementAlignment(PlacementAlignmentEnum.BottomRight);
+        public static readonly PlacementAlignment BottomRight = new(PlacementAlignmentEnum.BottomRight);
     }
 
     public enum PlacementAlignmentEnum

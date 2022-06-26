@@ -14,7 +14,9 @@ namespace TEditor.Layers
 {
     public class Layer : Canvas, INotifyPropertyChanged
     {
+#pragma warning disable CS0067 // Fody自动实现
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning disable CS0067
 
         public string Id { get; private set; } = Guid.NewGuid().ToString();
 

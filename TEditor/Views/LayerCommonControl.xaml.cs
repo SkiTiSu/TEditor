@@ -20,7 +20,6 @@ namespace TEditor.Views
     /// </summary>
     public partial class LayerCommonControl : UserControl
     {
-        private LayerInner layer;
         public LayerCommonControl()
         {
             InitializeComponent();

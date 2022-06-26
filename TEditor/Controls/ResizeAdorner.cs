@@ -13,7 +13,6 @@ namespace TEditor
     public class ResizeAdorner : Adorner
     {
         VisualCollection visualChilderns;
-        Canvas ParentCanvas;
         public FrameworkElement Substitute { get; set; }
         public double SubstituteScale { get; set; }
 
@@ -24,7 +23,6 @@ namespace TEditor
             : base(element)
         {
             visualChilderns = new VisualCollection(this);
-            //ParentCanvas = parent;
 
             CreateThumb(PlacementAlignment.Top);
             CreateThumb(PlacementAlignment.TopLeft);
@@ -35,7 +33,7 @@ namespace TEditor
             CreateThumb(PlacementAlignment.BottomLeft);
             CreateThumb(PlacementAlignment.BottomRight);
 
-            Rectangle border = new Rectangle()
+            Rectangle border = new()
             {
                 StrokeThickness = 1,
                 Stroke = Brushes.Black,
@@ -53,9 +51,11 @@ namespace TEditor
 
         ResizeThumb CreateThumb(PlacementAlignment alignment)
         {
-            ResizeThumb thumb = new ResizeThumb();
-            thumb.Alignment = alignment;
-            thumb.Cursor = alignment.GetCursor();
+            ResizeThumb thumb = new()
+            {
+                Alignment = alignment,
+                Cursor = alignment.GetCursor()
+            };
 
             thumb.DragDelta += Thumb_DragDelta;
 
@@ -84,7 +84,7 @@ namespace TEditor
             var newLeft = Canvas.GetLeft(adornedElement) - dx;
             var newTop = Canvas.GetTop(adornedElement) - dy;
 
-            CanProp prop = new CanProp()
+            CanProp prop = new()
             {
                 Width = newWidth,
                 Height = newHeight,
@@ -111,80 +111,8 @@ namespace TEditor
             OnChanged?.Invoke(adornedElement, prop);
         }
 
-        private MouseAction _currentMouseAction;
-
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            //Point point = Mouse.GetPosition(AdornedElement);
-            //_currentMouseAction = GetMouseAction(point);
-            //UpdateCursor();
-        }
-
-
-        private enum MouseAction
-        {
-            TopLeft,
-            TopRight,
-            BottomLeft,
-            BottomRight,
-            Top,
-            Bottom,
-            Left,
-            Right,
-            Move,
-            Rotate
-        }
-
-        private MouseAction GetMouseAction(Point point)
-        {
-            double h2 = ActualHeight / 2;
-            double w2 = ActualWidth / 2;
-            if (point.X < w2 && point.Y < h2)
-                return MouseAction.TopLeft;
-            else if (point.X > w2 && point.Y > h2)
-                return MouseAction.BottomRight;
-            else if (point.X > w2 && point.Y < h2)
-                return MouseAction.TopRight;
-            else
-                return MouseAction.BottomLeft;
-        }
-
-        private void UpdateCursor()
-        {
-            switch (_currentMouseAction)
-            {
-                case MouseAction.TopLeft:
-                case MouseAction.BottomRight:
-                    Cursor = Cursors.SizeNWSE;
-                    break;
-                case MouseAction.TopRight:
-                case MouseAction.BottomLeft:
-                    Cursor = Cursors.SizeNESW;
-                    break;
-                case MouseAction.Top:
-                case MouseAction.Bottom:
-                    Cursor = Cursors.SizeNS;
-                    break;
-                case MouseAction.Left:
-                case MouseAction.Right:
-                    Cursor = Cursors.SizeWE;
-                    break;
-                case MouseAction.Move:
-                    Cursor = Cursors.Cross;
-                    break;
-                case MouseAction.Rotate:
-                    Cursor = Cursors.Hand; //TODO
-                    break;
-                default:
-                    Cursor = Cursors.Arrow;
-                    break;
-
-            }
-        }
-
         protected override int VisualChildrenCount { get { return visualChilderns.Count; } }
         protected override Visual GetVisualChild(int index) { return visualChilderns[index]; }
-
 
         protected override Size ArrangeOverride(Size finalSize) //Should use ArrangeCore instead?
         {
@@ -238,26 +166,6 @@ namespace TEditor
             }
 
             return finalSize;
-        }
-
-        double _renderRadius = 5.0;
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            //Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
-            //SolidColorBrush renderBrush = new SolidColorBrush(Colors.Black);
-            //renderBrush.Opacity = 0.3;
-            //Pen renderPen = new Pen(new SolidColorBrush(Colors.Black), 1.5);
-            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, _renderRadius, _renderRadius);
-            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopRight, _renderRadius, _renderRadius);
-            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, _renderRadius, _renderRadius);
-            //drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, _renderRadius, _renderRadius);
-
-            //drawingContext.DrawRectangle(renderBrush, renderPen, new Rect(adornedElementRect.TopLeft + new Vector(-5, 0), adornedElementRect.BottomLeft));
-            //drawingContext.DrawRectangle(renderBrush, renderPen, new Rect(adornedElementRect.TopLeft + new Vector(0, -5), adornedElementRect.TopRight));
-            //drawingContext.DrawRectangle(renderBrush, renderPen, new Rect(adornedElementRect.TopRight, adornedElementRect.BottomRight + new Vector(5, 0)));
-            //drawingContext.DrawRectangle(renderBrush, renderPen, new Rect(adornedElementRect.BottomLeft, adornedElementRect.BottomRight + new Vector(0, 5)));
-
         }
     }
 }

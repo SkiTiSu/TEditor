@@ -39,7 +39,7 @@ namespace TEditor.ViewModels
 
         public ObservableCollection<FormatConditionModel> Conditions => Model?.FormatConditionModels;
         public string Name { get => Model.Name; set => Model.Name = value; }
-        public SolidColorBrush ColorBrush => new SolidColorBrush(Model.Color);
+        public SolidColorBrush ColorBrush => new(Model.Color);
 
         public event EventHandler RemoveThis;
 
@@ -105,8 +105,10 @@ namespace TEditor.ViewModels
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 //Owner = this,
             };
-            var conditionControl = new FormatConditionControl();
-            conditionControl.DataContext = model;
+            var conditionControl = new FormatConditionControl
+            {
+                DataContext = model
+            };
             conditionControl.buttonOK.Click += (ss, ee) =>
             {
                 windowCondition.Close();

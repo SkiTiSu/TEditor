@@ -99,8 +99,10 @@ namespace TEditor.ViewModels
         [RelayCommand]
         public void Open()
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = $"TEditor文件|*.ted|所有文件|*.*";
+            OpenFileDialog dlg = new()
+            {
+                Filter = $"TEditor文件|*.ted|所有文件|*.*"
+            };
             if (dlg.ShowDialog() == true)
             {
                 string json = File.ReadAllText(dlg.FileName);

@@ -9,7 +9,7 @@ namespace TEditor
 {
     public class GlobalCache
     {
-        public static List<FontFamily> LocalizedFontFamily = new List<FontFamily>();
+        public static List<FontFamily> LocalizedFontFamily = new();
 
         public static void Init()
         {
