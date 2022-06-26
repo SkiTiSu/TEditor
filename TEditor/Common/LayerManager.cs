@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -114,9 +115,17 @@ namespace TEditor
 
             _canvasContent.Children.Add(layer);
 
-            Layers.Insert(0, layer);
+            layerInner.resizeAdorner = new(layerInner._substitute);
+            layerInner.resizeAdorner.OnChanged += (element, prop) =>
+            {
+                layerInner.ApplyCanProp(prop);
+            };
+            _canvasLayout.Children.Add(layerInner._substitute);
+            _adornerLayer.Add(layerInner.resizeAdorner);
 
+            Layers.Insert(0, layer);
             layerInner.PropertyChangeDetail += LayerInner_PropertyChangeDetail;
+            undoManager.AddChange(new LayerChange(this, layer, LayerChangeAction.Add));
         }
 
         private void LayerInner_PropertyChangeDetail(object sender, string propertyName, object before, object after)
@@ -198,6 +207,10 @@ namespace TEditor
             _canvasContent.Children.Remove(layer);
             //TODO: 清除替身更好的方法
             _canvasLayout.Children.Remove(layer.Inner._substitute);
+            _adornerLayer.Remove(layer.Inner.resizeAdorner);
+
+            // TODO undo不能记录图层顺序变更，以及删除图层redo后无法恢复原来的位置
+            undoManager.AddChange(new LayerChange(this, layer, LayerChangeAction.Remove));
             Layers.Remove(layer);
         }
 
@@ -208,6 +221,7 @@ namespace TEditor
             {
                 _canvasContent.Children.Remove(layer);
                 _canvasLayout.Children.Remove(layer.Inner._substitute);
+                _adornerLayer.Remove(layer.Inner.resizeAdorner);
             }
             Layers.Clear();
         }

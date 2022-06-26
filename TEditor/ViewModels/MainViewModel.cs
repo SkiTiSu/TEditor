@@ -28,12 +28,16 @@ namespace TEditor.ViewModels
             set
             {
                 // 这里相当于状态回归到没有对新文件/打开的文件做任何更改
+                undoManager.CanAddChange = false;
+
                 model = value;
                 layerManager.SetLayerModels(Model.Layers);
                 DocVm.Model = model.DocModel;
                 //OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
                 IsEdited = false;
                 RefreshTitle();
+
+                undoManager.CanAddChange = true;
             }
         }
 

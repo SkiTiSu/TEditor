@@ -58,8 +58,8 @@ namespace TEditor
 
         Canvas _canvasLayout;
         public Layer ParentCanvas;
-        AdornerLayer _adornerLayer;
         public Substitute _substitute;
+        public ResizeAdorner resizeAdorner;
 
         double ContentScale { get => ParentCanvas.ContentScale; }
         double ContentDisLeft { get => ParentCanvas.ContentDisLeft; }
@@ -72,25 +72,16 @@ namespace TEditor
         {
             _canvasLayout = canvasLayout;
             ParentCanvas = canvasContent;
-            _adornerLayer = AdornerLayer.GetAdornerLayer(_canvasLayout);
 
             _substitute = new Substitute();
             _substitute.Visibility = Visibility.Collapsed;
             _substitute.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-
             _substitute.MouseLeftButtonDown += Substitute_MouseLeftButtonDown;
-            //ArrangeControl(layer, substitute);
-            ResizeAdorner ra = new ResizeAdorner(_substitute);
-            ra.OnChanged += Ra_OnChanged;
 
-            _canvasLayout.Children.Add(_substitute);
-
-            _adornerLayer.Add(ra);
-
-            if (!(LayerControl is DefaultLayerControl))
+            if (LayerControl is not DefaultLayerControl)
             {
                 LayerControl.DataContext = this;
-            }       
+            }
         }
 
         private void Substitute_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
