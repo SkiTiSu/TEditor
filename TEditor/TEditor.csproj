@@ -8,8 +8,8 @@
     <UseWPF>true</UseWPF>
     <LangVersion>9.0</LangVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <AssemblyVersion>0.1.4</AssemblyVersion>
-    <Copyright>Copyright © 2020-2021 SkiTiSu</Copyright>
+    <AssemblyVersion>0.2.0</AssemblyVersion>
+    <Copyright>Copyright © 2020-2022 SkiTiSu</Copyright>
     <ApplicationIcon>Resources\Te.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
