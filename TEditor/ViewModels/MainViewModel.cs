@@ -105,14 +105,20 @@ namespace TEditor.ViewModels
             };
             if (dlg.ShowDialog() == true)
             {
-                string json = File.ReadAllText(dlg.FileName);
-                var file = JsonSerializer.Deserialize<TEditorFile>(json, GlobalConfig.Instance.JsonOptions);
-                //TODO: 错误处理
-                CurrentFileName = dlg.SafeFileName;
-                Model = file;
-
-                layerManager.RefreshClippingMask();
+                OpenFile(dlg.FileName);
             }
+        }
+
+        public void OpenFile(string filename)
+        {
+            string json = File.ReadAllText(filename);
+
+            var file = JsonSerializer.Deserialize<TEditorFile>(json, GlobalConfig.Instance.JsonOptions);
+            //TODO: 错误处理
+            CurrentFileName = Path.GetFileName(filename);
+            Model = file;
+
+            layerManager.RefreshClippingMask();
         }
 
         [RelayCommand]

@@ -9,6 +9,8 @@ namespace TEditor
 {
     public class GlobalCache
     {
+        public static string[] Args;
+
         public static List<FontFamily> LocalizedFontFamily = new();
 
         public static void Init()

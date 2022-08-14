@@ -21,6 +21,9 @@ using HandyControl.Controls;
 using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
 using TEditor.Utils.Undo;
+using TEditor.Models;
+using CommandLine;
+using TEditor.Common;
 
 namespace TEditor
 {
@@ -75,6 +78,49 @@ namespace TEditor
                 DataContext = Vm.DocVm
             };
             SwitchToDocControl();
+        }
+
+        private void GlowWindow_ContentRendered(object sender, EventArgs e)
+        {
+            ArrangeControl();
+            Parser.Default.ParseArguments<BatchGenOptions, object>(GlobalCache.Args)
+                .WithParsed<BatchGenOptions>(BatchGenCmd)
+                .WithNotParsed(HandleParseError);
+        }
+
+        static void HandleParseError(IEnumerable<Error> errs)
+        {
+            //handle errors
+        }
+
+        void BatchGenCmd(BatchGenOptions opts)
+        {
+            ConsoleManager.AllocConsole();
+            Console.WriteLine("TEditor by 四季天书 " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            Console.WriteLine("读取文件");
+            Vm.OpenFile(opts.TedFile);
+            using TextReader sr = File.OpenText(opts.DataSource);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                BadDataFound = null,
+            };
+            var reader = new CsvReader(sr, config);
+            IEnumerable<dynamic> records = reader.GetRecords<dynamic>();
+            ChangeDataTable(ToDataTable(records));
+            Console.WriteLine("开始批量生成");
+            BatchExportViewModel model = new()
+            {
+                ExportFolder = opts.OutputDirectory,
+                FileNameTemplate = opts.Filename,
+                StartAt = opts.Start,
+                EndAt = opts.End,
+                RepeatTimes = opts.Repeats,
+                DeltaX = opts.OffsetX,
+                DeltaY = opts.OffsetY,
+            };
+            BatchExport(model);
+            Console.WriteLine("批量生成完成");
+            Environment.Exit(0);
         }
 
         string LayerIdVisibleChangedByFormatCondition = string.Empty;
@@ -377,7 +423,12 @@ namespace TEditor
             };
             var reader = new CsvReader(sr, config);
             IEnumerable<dynamic> records = reader.GetRecords<dynamic>();
-            currentDataTable = ToDataTable(records);
+            ChangeDataTable(ToDataTable(records));
+        }
+
+        private void ChangeDataTable(DataTable table)
+        {
+            currentDataTable = table;
             dataGridMain.ItemsSource = currentDataTable.DefaultView;
             //UpdateVarText(0);
             dataGridMain.SelectedIndex = 0;
@@ -521,6 +572,11 @@ namespace TEditor
         {
             var model = beView.model;
             windowBatchExport.Close();
+            BatchExport(model);
+        }
+
+        private void BatchExport(BatchExportViewModel model)
+        {
             ExportMode = true;
             if (model.RepeatTimes == 0)
             {
@@ -559,11 +615,6 @@ namespace TEditor
             {
                 return false;
             }
-        }
-
-        private void GlowWindow_ContentRendered(object sender, EventArgs e)
-        {
-            ArrangeControl();
         }
 
         private void GlowWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

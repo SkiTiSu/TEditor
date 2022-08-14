@@ -11,6 +11,7 @@
     <AssemblyVersion>0.2.0</AssemblyVersion>
     <Copyright>Copyright © 2020-2022 SkiTiSu</Copyright>
     <ApplicationIcon>Resources\Te.ico</ApplicationIcon>
+    <Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Resources\Te.ico" />
@@ -31,6 +32,7 @@
     <Resource Include="Resources\media_offline.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview4" />
     <PackageReference Include="Costura.Fody" Version="5.7.0" PrivateAssets="All" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
@@ -51,5 +53,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
+	
+  <Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+  	<!-- Work around https://github.com/dotnet/wpf/issues/6792 -->
+  
+  	<ItemGroup>
+  		<FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
+  		<Analyzer Remove="@(Analyzer)" />
+  		<Analyzer Include="@(FilteredAnalyzer)" />
+  	</ItemGroup>
+  </Target>
 
 </Project>
